@@ -108,4 +108,3 @@ public class PlayerStats {
         return duelsTotal > 0 ? (double) duelsWon / duelsTotal * 100 : 0;
     }
 }
-
