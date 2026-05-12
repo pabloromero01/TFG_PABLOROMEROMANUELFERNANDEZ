@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Servicio para consumir api-football (api-sports.io).
  * Plan gratuito: temporadas 2022-2024, 100 peticiones/día.
- * Búsqueda por nombre requiere también league/team — usamos ID directo.
+ * Búsqueda por nombre requiere también league/team — usamos ID directo
  */
 public class ApiFootballService {
 
