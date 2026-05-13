@@ -2,8 +2,10 @@ package com.tfg.futbolstats.controller;
 
 import com.tfg.futbolstats.model.Player;
 import com.tfg.futbolstats.model.PlayerStats;
+import com.tfg.futbolstats.service.ExportService;
 import com.tfg.futbolstats.service.FavoritesService;
 import com.tfg.futbolstats.service.LeagueService;
+import com.tfg.futbolstats.service.NotasService;
 import com.tfg.futbolstats.service.PlayerService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -42,6 +44,10 @@ public class DashboardController implements Initializable {
     @FXML private Label statGoals, statAssists, statApps, statMins, statRating;
     @FXML private GridPane attackGrid, defenseGrid;
 
+    // --- Notas (nuevo) ---
+    @FXML private TextArea notaField;
+    @FXML private Label    notaStatusLabel;
+
     // --- Comparar ---
     @FXML private ComboBox<String> compareSeasonCombo;
     @FXML private TextField        compareSearch1, compareSearch2;
@@ -78,20 +84,22 @@ public class DashboardController implements Initializable {
     @FXML private ComboBox<String> defaultSeasonCombo;
     @FXML private Label settingsUsername, settingsApiLabel, seasonSavedLabel, colorSavedLabel;
     @FXML private Button btnColorGreen, btnColorBlue, btnColorOrange, btnColorPurple, btnColorRed;
-    private String pendingAccent = "#00c97a"; // color seleccionado pero no guardado aún
+    private String pendingAccent = "#00c97a";
 
-    private final PlayerService   playerService   = new PlayerService();
-    private final LeagueService   leagueService   = new LeagueService();
+    private final PlayerService    playerService    = new PlayerService();
+    private final LeagueService    leagueService    = new LeagueService();
     private final FavoritesService favoritesService = FavoritesService.getInstance();
-    private Player currentPlayerDetail; // jugador actualmente visible en detalle
+    private final NotasService     notasService     = NotasService.getInstance();
+    private final ExportService    exportService    = ExportService.getInstance();
 
+    private Player currentPlayerDetail;
     private Player selectedCompare1, selectedCompare2;
     private List<Player> currentTopPlayers;
     private List<Player> currentWorstPlayers;
-    private String currentTab   = "goals";
+    private String currentTab      = "goals";
     private String currentWorstTab = "red";
-    private String currentAccent  = "#00c97a";
-    private String loggedUsername = "";
+    private String currentAccent   = "#00c97a";
+    private String loggedUsername  = "";
 
     private static final String HINT =
             "Jugadores disponibles: Messi, Cristiano Ronaldo, Mbappe, Haaland, " +
@@ -124,8 +132,8 @@ public class DashboardController implements Initializable {
     @FXML private void onNavLeagues()   { showPage(pageLeagues);   setActive(btnLeagues); }
     @FXML private void onNavWorst()     { showPage(pageWorst);     setActive(btnWorst); }
     @FXML private void onNavSettings()  { showPage(pageSettings);  setActive(btnSettings); }
-    @FXML private void onNavGame()     { showPage(pageGame);     setActive(btnGame); }
-    @FXML private void onNavFavorites(){ showPage(pageFavorites); setActive(btnFavorites); loadFavorites(); }
+    @FXML private void onNavGame()      { showPage(pageGame);      setActive(btnGame); }
+    @FXML private void onNavFavorites() { showPage(pageFavorites); setActive(btnFavorites); loadFavorites(); }
 
     private void showPage(VBox page) {
         for (VBox p : List.of(pageDashboard, pagePlayer, pageCompare, pageLeagues, pageWorst, pageSettings, pageGame, pageFavorites)) {
@@ -202,10 +210,12 @@ public class DashboardController implements Initializable {
         playerEmptyState.setVisible(false); playerEmptyState.setManaged(false);
         playerDetailPanel.setVisible(true); playerDetailPanel.setManaged(true);
         updateFavBtn(player);
+
         playerNameLabel.setText(player.getName());
         playerNatLabel.setText("🌍 " + nvl(player.getNationality()));
         playerAgeLabel.setText("📅 " + (player.getAge() > 0 ? player.getAge() + " años" : "—"));
         playerPosLabel.setText("📍 " + nvl(player.getPosition()));
+
         PlayerStats s = player.getStats();
         if (s != null) {
             playerTeamLabel.setText(nvl(s.getTeamName()) + " · " + nvl(s.getLeagueName()));
@@ -216,8 +226,84 @@ public class DashboardController implements Initializable {
             statRating.setText(s.getRating() > 0 ? String.format("%.2f", s.getRating()) : "—");
             buildStatsGrids(s);
         }
+
+        // Cargar nota del jugador si tiene
+        String nota = notasService.getNota(player.getName());
+        if (notaField != null) {
+            notaField.setText(nota);
+            notaStatusLabel.setText(nota.isEmpty() ? "" : "Nota guardada");
+        }
     }
 
+    // =============================================
+    // NOTAS — métodos nuevos
+    // =============================================
+
+    /**
+     * Guarda la nota escrita en el campo de texto para el jugador actual.
+     */
+    @FXML private void onGuardarNota() {
+        if (currentPlayerDetail == null) {
+            setStatus("Selecciona un jugador primero");
+            return;
+        }
+        String nota = notaField.getText().trim();
+        if (nota.isEmpty()) {
+            notasService.borrarNota(currentPlayerDetail.getName());
+            notaStatusLabel.setText("Nota eliminada");
+            notaStatusLabel.setStyle("-fx-text-fill:#e05252;-fx-font-size:12px;");
+            setStatus("Nota eliminada para " + currentPlayerDetail.getName());
+        } else {
+            notasService.guardarNota(currentPlayerDetail.getName(), nota);
+            notaStatusLabel.setText("✔ Nota guardada");
+            notaStatusLabel.setStyle("-fx-text-fill:#00c97a;-fx-font-size:12px;-fx-font-weight:600;");
+            setStatus("✔ Nota guardada para " + currentPlayerDetail.getName());
+        }
+    }
+
+    // =============================================
+    // EXPORT — métodos nuevos
+    // =============================================
+
+    /**
+     * Exporta la ficha del jugador actual a un archivo TXT.
+     */
+    @FXML private void onExportarFicha() {
+        if (currentPlayerDetail == null) {
+            setStatus("Selecciona un jugador primero");
+            return;
+        }
+        new Thread(() -> {
+            try {
+                String ruta = exportService.exportarFichaJugador(currentPlayerDetail);
+                Platform.runLater(() -> setStatus("✔ Ficha exportada en: " + ruta));
+            } catch (Exception e) {
+                Platform.runLater(() -> setStatus("⚠ Error exportando: " + e.getMessage()));
+            }
+        }).start();
+    }
+
+    /**
+     * Exporta la comparativa actual a un archivo CSV.
+     */
+    @FXML private void onExportarComparativa() {
+        if (selectedCompare1 == null || selectedCompare2 == null) {
+            setStatus("Realiza una comparativa primero");
+            return;
+        }
+        new Thread(() -> {
+            try {
+                String ruta = exportService.exportarComparativa(selectedCompare1, selectedCompare2);
+                Platform.runLater(() -> setStatus("✔ Comparativa exportada en: " + ruta));
+            } catch (Exception e) {
+                Platform.runLater(() -> setStatus("⚠ Error exportando: " + e.getMessage()));
+            }
+        }).start();
+    }
+
+    // =============================================
+    // ESTADÍSTICAS GRIDS
+    // =============================================
     private void buildStatsGrids(PlayerStats s) {
         attackGrid.getChildren().clear();
         defenseGrid.getChildren().clear();
@@ -251,7 +337,6 @@ public class DashboardController implements Initializable {
             selectedCompare1 = p;
             compareName1.setText(p.getName());
             compareTeam1.setText(p.getStats() != null ? nvl(p.getStats().getTeamName()) : "");
-            // Ocultar búsqueda, mostrar info
             compareSearchBox1.setVisible(false); compareSearchBox1.setManaged(false);
             compareInfo1.setVisible(true);       compareInfo1.setManaged(true);
             setStatus("✔ " + p.getName() + " seleccionado como Jugador 1");
@@ -418,16 +503,14 @@ public class DashboardController implements Initializable {
     private void switchTab(String tab, Button activeBtn, boolean isWorst) {
         if (!isWorst) {
             currentTab = tab;
-            for (Button b : List.of(tabGoals, tabAssists, tabShots, tabPasses, tabRating, tabYellow)) {
+            for (Button b : List.of(tabGoals, tabAssists, tabShots, tabPasses, tabRating, tabYellow))
                 b.getStyleClass().removeAll("top-tab-active");
-            }
             activeBtn.getStyleClass().add("top-tab-active");
             if (currentTopPlayers != null) renderTopPlayers(currentTopPlayers, tab, false);
         } else {
             currentWorstTab = tab;
-            for (Button b : List.of(worstTabRed, worstTabYellow, worstTabRating, worstTabGoals)) {
+            for (Button b : List.of(worstTabRed, worstTabYellow, worstTabRating, worstTabGoals))
                 b.getStyleClass().removeAll("top-tab-active", "worst-tab-active");
-            }
             activeBtn.getStyleClass().add("worst-tab-active");
             if (currentWorstPlayers != null) renderTopPlayers(currentWorstPlayers, tab, true);
         }
@@ -437,24 +520,17 @@ public class DashboardController implements Initializable {
         VBox container = worst ? worstPlayersContainer : topPlayersContainer;
         container.getChildren().clear();
         container.setVisible(true); container.setManaged(true);
-
-        List<Player> sorted = worst
-                ? leagueService.sortByTabWorst(players, tab)
-                : leagueService.sortByTab(players, tab);
-
+        List<Player> sorted = worst ? leagueService.sortByTabWorst(players, tab) : leagueService.sortByTab(players, tab);
         String[] medals = {"🥇","🥈","🥉","4","5"};
         String accentColor = worst ? "#e05252" : currentAccent;
-
         for (int i = 0; i < Math.min(5, sorted.size()); i++) {
             Player p = sorted.get(i);
             HBox row = new HBox(16);
             row.setAlignment(Pos.CENTER_LEFT);
             row.setPadding(new Insets(14, 20, 14, 20));
             row.setStyle("-fx-background-color:#1e1e1e;-fx-background-radius:10;-fx-border-color:#2a2a2a;-fx-border-radius:10;-fx-border-width:1;");
-
             Label rank = new Label(medals[i]);
             rank.setStyle("-fx-font-size:20px;-fx-min-width:32;");
-
             VBox info = new VBox(3);
             Label name = new Label(p.getName());
             name.setStyle("-fx-text-fill:#f0f0f0;-fx-font-size:14px;-fx-font-weight:600;");
@@ -462,7 +538,6 @@ public class DashboardController implements Initializable {
             team.setStyle("-fx-text-fill:#9a9a9a;-fx-font-size:12px;");
             info.getChildren().addAll(name, team);
             HBox.setHgrow(info, Priority.ALWAYS);
-
             VBox valueBox = new VBox(2);
             valueBox.setAlignment(Pos.CENTER_RIGHT);
             Label value = new Label(leagueService.getTabValue(p, tab));
@@ -470,7 +545,6 @@ public class DashboardController implements Initializable {
             Label unit = new Label(getTabUnit(tab));
             unit.setStyle("-fx-text-fill:#555;-fx-font-size:11px;");
             valueBox.getChildren().addAll(value, unit);
-
             row.getChildren().addAll(rank, info, valueBox);
             container.getChildren().add(row);
         }
@@ -478,13 +552,13 @@ public class DashboardController implements Initializable {
 
     private String getTabUnit(String tab) {
         return switch (tab) {
-            case "goals","worstGoals"  -> "goles";
-            case "assists"             -> "asist.";
-            case "shots"               -> "tiros";
-            case "passes"              -> "pases clave";
-            case "rating","worstRating"-> "rating";
-            case "yellow","worstYellow"-> "amarillas";
-            case "red"                 -> "rojas";
+            case "goals","worstGoals"   -> "goles";
+            case "assists"              -> "asist.";
+            case "shots"                -> "tiros";
+            case "passes"               -> "pases clave";
+            case "rating","worstRating" -> "rating";
+            case "yellow","worstYellow" -> "amarillas";
+            case "red"                  -> "rojas";
             default -> "";
         };
     }
@@ -501,7 +575,6 @@ public class DashboardController implements Initializable {
         new Thread(() -> {
             try {
                 int id = leagueService.getLeagueId(league);
-                // Para peores: cargamos el top de rojas (que es un endpoint específico)
                 currentWorstPlayers = leagueService.getTopPlayers(id, season, "yellow");
                 Platform.runLater(() -> {
                     worstTabsBox.setVisible(true); worstTabsBox.setManaged(true);
@@ -514,10 +587,10 @@ public class DashboardController implements Initializable {
         }).start();
     }
 
-    @FXML private void onWorstTabRed()    { switchTab("red",        worstTabRed,    true); }
-    @FXML private void onWorstTabYellow() { switchTab("yellow",     worstTabYellow, true); }
-    @FXML private void onWorstTabRating() { switchTab("worstRating",worstTabRating, true); }
-    @FXML private void onWorstTabGoals()  { switchTab("worstGoals", worstTabGoals,  true); }
+    @FXML private void onWorstTabRed()    { switchTab("red",         worstTabRed,    true); }
+    @FXML private void onWorstTabYellow() { switchTab("yellow",      worstTabYellow, true); }
+    @FXML private void onWorstTabRating() { switchTab("worstRating", worstTabRating, true); }
+    @FXML private void onWorstTabGoals()  { switchTab("worstGoals",  worstTabGoals,  true); }
 
     // =============================================
     // AJUSTES
@@ -529,7 +602,7 @@ public class DashboardController implements Initializable {
     @FXML private void onColorRed()    { applyAccent("#e05252", btnColorRed);    }
 
     private void applyAccent(String color, Button activeBtn) {
-        pendingAccent = color; // Solo marcar como pendiente
+        pendingAccent = color;
         for (Button b : List.of(btnColorGreen, btnColorBlue, btnColorOrange, btnColorPurple, btnColorRed))
             b.getStyleClass().remove("color-btn-active");
         activeBtn.getStyleClass().add("color-btn-active");
@@ -566,7 +639,6 @@ public class DashboardController implements Initializable {
         }
         setStatus("Recargando datos para temporada " + season + "...");
         compareSeasonHint.setText("Cargando...");
-
         new Thread(() -> {
             try {
                 if (selectedCompare1 != null) {
@@ -578,19 +650,15 @@ public class DashboardController implements Initializable {
                     if (!results.isEmpty()) selectedCompare2 = results.get(0);
                 }
                 Platform.runLater(() -> {
-                    // Actualizar info mostrada
                     if (selectedCompare1 != null) {
                         compareName1.setText(selectedCompare1.getName());
-                        compareTeam1.setText(selectedCompare1.getStats() != null
-                                ? nvl(selectedCompare1.getStats().getTeamName()) : "");
+                        compareTeam1.setText(selectedCompare1.getStats() != null ? nvl(selectedCompare1.getStats().getTeamName()) : "");
                     }
                     if (selectedCompare2 != null) {
                         compareName2.setText(selectedCompare2.getName());
-                        compareTeam2.setText(selectedCompare2.getStats() != null
-                                ? nvl(selectedCompare2.getStats().getTeamName()) : "");
+                        compareTeam2.setText(selectedCompare2.getStats() != null ? nvl(selectedCompare2.getStats().getTeamName()) : "");
                     }
                     compareSeasonHint.setText("✔ Datos actualizados a temporada " + season);
-                    // Si ya había tabla, regenerarla
                     if (compareScrollPane.isVisible() && selectedCompare1 != null && selectedCompare2 != null) {
                         var comparison = playerService.compare(selectedCompare1, selectedCompare2);
                         int[] score = playerService.getScore(comparison);
@@ -661,15 +729,11 @@ public class DashboardController implements Initializable {
             String order = favSortCombo.getValue() != null ? favSortCombo.getValue() : "RECIENTES";
             List<Player> favs = favoritesService.getFavorites(order);
             favContainer.getChildren().clear();
-
             boolean empty = favs.isEmpty();
             favEmptyState.setVisible(empty); favEmptyState.setManaged(empty);
             favContainer.setVisible(!empty); favContainer.setManaged(!empty);
             favCountLabel.setText(favs.size() + (favs.size() == 1 ? " favorito" : " favoritos"));
-
-            for (Player p : favs) {
-                favContainer.getChildren().add(buildFavCard(p));
-            }
+            for (Player p : favs) favContainer.getChildren().add(buildFavCard(p));
         } catch (Exception e) {
             setStatus("Error cargando favoritos: " + e.getMessage());
         }
@@ -685,8 +749,6 @@ public class DashboardController implements Initializable {
                 "-fx-border-color:#00c97a;-fx-border-radius:10;-fx-border-width:1;-fx-cursor:hand;"));
         card.setOnMouseExited(e -> card.setStyle("-fx-background-color:#1e1e1e;-fx-background-radius:10;" +
                 "-fx-border-color:#2a2a2a;-fx-border-radius:10;-fx-border-width:1;-fx-cursor:hand;"));
-
-        // Info principal
         VBox info = new VBox(4);
         Label name = new Label(player.getName());
         name.setStyle("-fx-text-fill:#f0f0f0;-fx-font-size:15px;-fx-font-weight:700;");
@@ -696,8 +758,6 @@ public class DashboardController implements Initializable {
         season.setStyle("-fx-text-fill:#555;-fx-font-size:11px;");
         info.getChildren().addAll(name, team, season);
         HBox.setHgrow(info, Priority.ALWAYS);
-
-        // Stats rápidas
         PlayerStats s = player.getStats();
         if (s != null) {
             HBox stats = new HBox(20);
@@ -712,8 +772,6 @@ public class DashboardController implements Initializable {
         } else {
             card.getChildren().add(info);
         }
-
-        // Botón ver perfil
         Button viewBtn = new Button("Ver perfil →");
         viewBtn.setStyle("-fx-background-color:transparent;-fx-text-fill:#00c97a;-fx-font-size:12px;" +
                 "-fx-font-weight:600;-fx-cursor:hand;-fx-border-color:#00c97a;-fx-border-radius:6;-fx-padding:6 12;");
@@ -723,8 +781,6 @@ public class DashboardController implements Initializable {
             playerDetailPanel.setVisible(true); playerDetailPanel.setManaged(true);
             playerEmptyState.setVisible(false);  playerEmptyState.setManaged(false);
         });
-
-        // Botón eliminar
         Button delBtn = new Button("🗑");
         delBtn.setStyle("-fx-background-color:transparent;-fx-text-fill:#e05252;-fx-font-size:14px;-fx-cursor:hand;");
         delBtn.setOnAction(e -> {
@@ -735,7 +791,6 @@ public class DashboardController implements Initializable {
                 setStatus("Eliminado de favoritos: " + player.getName());
             } catch (Exception ex) { setStatus("Error: " + ex.getMessage()); }
         });
-
         card.getChildren().addAll(viewBtn, delBtn);
         return card;
     }

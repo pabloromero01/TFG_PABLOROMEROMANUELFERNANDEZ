@@ -142,6 +142,25 @@
                                         style="-fx-font-size:12px;-fx-padding:7 14;"/>
                                 <Label fx:id="favStatusLabel" text="" style="-fx-text-fill:#00c97a;-fx-font-size:12px;-fx-font-weight:600;"/>
                             </HBox>
+                            <!-- NOTAS Y EXPORTAR FICHA -->
+                            <VBox spacing="6">
+                                <Label text="📝  NOTA PERSONAL" style="-fx-text-fill:#555555;-fx-font-size:10px;-fx-font-weight:600;"/>
+                                <TextArea fx:id="notaField"
+                                          promptText="Escribe una nota sobre este jugador..."
+                                          styleClass="search-field"
+                                          prefHeight="60"
+                                          wrapText="true"/>
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Button text="💾 Guardar nota" styleClass="btn-secondary"
+                                            onAction="#onGuardarNota"
+                                            style="-fx-font-size:12px;-fx-padding:7 14;"/>
+                                    <Label fx:id="notaStatusLabel" text=""
+                                           style="-fx-text-fill:#00c97a;-fx-font-size:12px;-fx-font-weight:600;"/>
+                                </HBox>
+                                <Button text="📤 Exportar ficha TXT" styleClass="btn-secondary"
+                                        onAction="#onExportarFicha"
+                                        style="-fx-font-size:12px;-fx-padding:7 14;"/>
+                            </VBox>
                         </VBox>
                         <HBox spacing="10">
                             <VBox styleClass="stat-box" spacing="4" HBox.hgrow="ALWAYS">
@@ -204,8 +223,6 @@
                     <!-- JUGADOR 1 -->
                     <VBox styleClass="compare-player-col" spacing="12" HBox.hgrow="ALWAYS">
                         <Label text="JUGADOR 1" style="-fx-text-fill:#555;-fx-font-size:10px;-fx-font-weight:600;"/>
-
-                        <!-- Estado: buscando (visible por defecto) -->
                         <VBox fx:id="compareSearchBox1" spacing="8" visible="true" managed="true">
                             <HBox spacing="8">
                                 <TextField fx:id="compareSearch1" styleClass="search-field" promptText="Ej: Messi, Haaland..." HBox.hgrow="ALWAYS"/>
@@ -213,8 +230,6 @@
                             </HBox>
                             <ListView fx:id="compareList1" prefHeight="130" styleClass="player-list"/>
                         </VBox>
-
-                        <!-- Estado: jugador seleccionado -->
                         <VBox fx:id="compareInfo1" spacing="10" visible="false" managed="false"
                               style="-fx-background-color:#252525;-fx-background-radius:10;-fx-padding:14;">
                             <HBox alignment="CENTER_LEFT" spacing="8">
@@ -238,13 +253,16 @@
                                 onAction="#onResetCompareAll" maxWidth="Infinity"
                                 style="-fx-font-size:12px;-fx-padding:8 12;"/>
                         <Label fx:id="scoreLabel" text="" styleClass="score-badge" visible="false" managed="false"/>
+                        <!-- EXPORTAR COMPARATIVA -->
+                        <Button text="📤 Exportar comparativa CSV" styleClass="btn-secondary"
+                                onAction="#onExportarComparativa"
+                                maxWidth="Infinity"
+                                style="-fx-font-size:12px;-fx-padding:8 12;"/>
                     </VBox>
 
                     <!-- JUGADOR 2 -->
                     <VBox styleClass="compare-player-col" spacing="12" HBox.hgrow="ALWAYS">
                         <Label text="JUGADOR 2" style="-fx-text-fill:#555;-fx-font-size:10px;-fx-font-weight:600;"/>
-
-                        <!-- Estado: buscando -->
                         <VBox fx:id="compareSearchBox2" spacing="8" visible="true" managed="true">
                             <HBox spacing="8">
                                 <TextField fx:id="compareSearch2" styleClass="search-field" promptText="Ej: Cristiano, Mbappe..." HBox.hgrow="ALWAYS"/>
@@ -252,8 +270,6 @@
                             </HBox>
                             <ListView fx:id="compareList2" prefHeight="130" styleClass="player-list"/>
                         </VBox>
-
-                        <!-- Estado: seleccionado -->
                         <VBox fx:id="compareInfo2" spacing="10" visible="false" managed="false"
                               style="-fx-background-color:#252525;-fx-background-radius:10;-fx-padding:14;">
                             <HBox alignment="CENTER_LEFT" spacing="8">
@@ -339,8 +355,6 @@
                             <Label text="Ajustes" styleClass="page-title"/>
                         </HBox>
                         <Label text="Personaliza tu experiencia en FútbolStats" styleClass="page-subtitle"/>
-
-                        <!-- Tema de color -->
                         <VBox styleClass="settings-card" spacing="16">
                             <Label text="🎨  COLOR DE ACENTO" styleClass="settings-section-title"/>
                             <Label text="Selecciona un color y pulsa Guardar para aplicarlo" styleClass="settings-desc"/>
@@ -356,8 +370,6 @@
                                 <Label fx:id="colorSavedLabel" text="" style="-fx-text-fill:#00c97a;-fx-font-size:12px;-fx-font-weight:600;"/>
                             </HBox>
                         </VBox>
-
-                        <!-- Temporada por defecto -->
                         <VBox styleClass="settings-card" spacing="16">
                             <Label text="📅  TEMPORADA POR DEFECTO" styleClass="settings-section-title"/>
                             <Label text="Se aplicará al abrir la app" styleClass="settings-desc"/>
@@ -367,8 +379,6 @@
                                 <Label fx:id="seasonSavedLabel" text="" style="-fx-text-fill:#00c97a;-fx-font-size:12px;"/>
                             </HBox>
                         </VBox>
-
-                        <!-- Info de la cuenta -->
                         <VBox styleClass="settings-card" spacing="16">
                             <Label text="👤  CUENTA" styleClass="settings-section-title"/>
                             <HBox spacing="40">
@@ -382,12 +392,10 @@
                                 </VBox>
                             </HBox>
                         </VBox>
-
-                        <!-- Sobre la app -->
                         <VBox styleClass="settings-card" spacing="10">
                             <Label text="ℹ️  SOBRE FUTBOLSTATS" styleClass="settings-section-title"/>
                             <Label text="Versión 1.0 — TFG Pablo Romero &amp; Manuel Fernández" styleClass="settings-desc"/>
-                            <Label text="Datos: api-football (api-sports.io) · Plan gratuito 100 peticiones/día"  styleClass="settings-desc"/>
+                            <Label text="Datos: api-football (api-sports.io) · Plan gratuito 100 peticiones/día" styleClass="settings-desc"/>
                             <Label text="Temporadas disponibles: 2022, 2023, 2024" styleClass="settings-desc"/>
                         </VBox>
                     </VBox>
@@ -401,8 +409,6 @@
                     <Label text="Mis Favoritos" styleClass="page-title"/>
                 </HBox>
                 <Label text="Jugadores guardados — ordénalos por categoría y consulta sus perfiles" styleClass="page-subtitle"/>
-
-                <!-- Controles -->
                 <HBox spacing="12" alignment="CENTER_LEFT">
                     <Label text="Ordenar por:" style="-fx-text-fill:#9a9a9a;-fx-font-size:13px;"/>
                     <ComboBox fx:id="favSortCombo" styleClass="combo-box" minWidth="160"/>
@@ -411,16 +417,12 @@
                     <Region HBox.hgrow="ALWAYS"/>
                     <Label fx:id="favCountLabel" text="0 favoritos" style="-fx-text-fill:#555;-fx-font-size:12px;"/>
                 </HBox>
-
-                <!-- Lista de favoritos -->
                 <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true"
                             style="-fx-background-color:transparent;-fx-background:transparent;-fx-border-color:transparent;">
                     <VBox fx:id="favContainer" spacing="10">
                         <padding><Insets bottom="20"/></padding>
                     </VBox>
                 </ScrollPane>
-
-                <!-- Estado vacío -->
                 <VBox fx:id="favEmptyState" alignment="CENTER" spacing="12" visible="true" managed="true">
                     <Label text="⭐" style="-fx-font-size:44px;"/>
                     <Label text="No tienes favoritos aún" style="-fx-text-fill:#9a9a9a;-fx-font-size:16px;-fx-font-weight:600;"/>
