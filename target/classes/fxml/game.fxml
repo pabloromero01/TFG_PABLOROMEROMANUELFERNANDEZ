@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.tfg.futbolstats.controller.GameController"
+      styleClass="game-root" spacing="0">
+
+    <!-- HEADER -->
+    <HBox styleClass="game-header" alignment="CENTER_LEFT">
+        <padding><Insets top="14" right="24" bottom="14" left="24"/></padding>
+        <Label fx:id="scoreLabel" text="PUNTOS  0" styleClass="game-score-label"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <!-- Selector categoría -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="Categoría:" style="-fx-text-fill:#555;-fx-font-size:12px;"/>
+            <ComboBox fx:id="categoryCombo" styleClass="game-combo" minWidth="150"/>
+        </HBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="recordLabel" text="MI RÉCORD  0" styleClass="game-record-label"/>
+    </HBox>
+
+    <!-- PANEL DE JUEGO -->
+    <StackPane VBox.vgrow="ALWAYS">
+
+        <!-- ===== JUEGO ACTIVO ===== -->
+        <VBox fx:id="gamePanel" visible="true" managed="true" spacing="0">
+
+            <!-- Categoría actual -->
+            <HBox styleClass="game-category-bar" alignment="CENTER" spacing="12">
+                <padding><Insets top="10" bottom="10"/></padding>
+                <Label fx:id="categoryIcon" text="⚽" style="-fx-font-size:20px;"/>
+                <VBox alignment="CENTER" spacing="2">
+                    <Label fx:id="categoryLabel" text="GOLES" styleClass="game-category-name"/>
+                    <Label fx:id="streakLabel"   text=""      styleClass="game-streak"/>
+                </VBox>
+            </HBox>
+
+            <!-- ARENA: dos jugadores -->
+            <HBox VBox.vgrow="ALWAYS" spacing="0">
+
+                <!-- JUGADOR IZQUIERDA (valor visible) -->
+                <VBox fx:id="leftCard" styleClass="game-card game-card-left card-neutral"
+                      HBox.hgrow="ALWAYS" alignment="CENTER" spacing="20">
+                    <padding><Insets top="40" right="30" bottom="40" left="30"/></padding>
+
+                    <VBox alignment="CENTER" spacing="6">
+                        <Label fx:id="leftName" text="JUGADOR" styleClass="game-player-name"/>
+                        <Label fx:id="leftTeam" text=""        styleClass="game-player-team"/>
+                        <Label fx:id="leftNat"  text=""        styleClass="game-player-nat"/>
+                    </VBox>
+
+                    <!-- Valor conocido -->
+                    <VBox styleClass="game-value-box" alignment="CENTER" spacing="4">
+                        <padding><Insets top="20" right="40" bottom="20" left="40"/></padding>
+                        <Label fx:id="leftValueLabel" text="GOLES" styleClass="game-value-category"/>
+                        <Label fx:id="leftValue"      text="0"     styleClass="game-value-number"/>
+                    </VBox>
+
+                    <Button fx:id="btnLeft" text="◀ Elegir" styleClass="game-btn-choose"
+                            onAction="#onChooseLeft" maxWidth="Infinity"/>
+                </VBox>
+
+                <!-- CENTRO -->
+                <VBox fx:id="questionBox" styleClass="game-center" alignment="CENTER"
+                      minWidth="180" spacing="16">
+                    <padding><Insets top="20" right="16" bottom="20" left="16"/></padding>
+                    <Label text="VS" styleClass="game-vs"/>
+                    <VBox styleClass="game-question-card" alignment="CENTER" spacing="12">
+                        <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+                        <Label fx:id="questionLabel" text="¿Quién tiene más goles?"
+                               styleClass="game-question" wrapText="true" textAlignment="CENTER"/>
+                    </VBox>
+                </VBox>
+
+                <!-- JUGADOR DERECHA (valor oculto) -->
+                <VBox fx:id="rightCard" styleClass="game-card game-card-right card-neutral"
+                      HBox.hgrow="ALWAYS" alignment="CENTER" spacing="20">
+                    <padding><Insets top="40" right="30" bottom="40" left="30"/></padding>
+
+                    <VBox alignment="CENTER" spacing="6">
+                        <Label fx:id="rightName" text="JUGADOR" styleClass="game-player-name"/>
+                        <Label fx:id="rightTeam" text=""        styleClass="game-player-team"/>
+                        <Label fx:id="rightNat"  text=""        styleClass="game-player-nat"/>
+                    </VBox>
+
+                    <!-- Valor oculto (se revela al responder) -->
+                    <StackPane>
+                        <VBox fx:id="rightValueHidden" styleClass="game-value-box game-value-hidden" alignment="CENTER" spacing="4"
+                              visible="true" managed="true">
+                            <padding><Insets top="20" right="40" bottom="20" left="40"/></padding>
+                            <Label text="?" styleClass="game-value-question"/>
+                        </VBox>
+                        <VBox fx:id="rightValueRevealed" styleClass="game-value-box" alignment="CENTER" spacing="4"
+                              visible="false" managed="false">
+                            <padding><Insets top="20" right="40" bottom="20" left="40"/></padding>
+                            <Label fx:id="rightValueLabel" text="GOLES" styleClass="game-value-category"/>
+                            <Label fx:id="rightValue"      text="0"     styleClass="game-value-number"/>
+                        </VBox>
+                    </StackPane>
+
+                    <Button fx:id="btnRight" text="Elegir ▶" styleClass="game-btn-choose"
+                            onAction="#onChooseRight" maxWidth="Infinity"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- ===== GAME OVER ===== -->
+        <VBox fx:id="gameOverPanel" visible="false" managed="false"
+              alignment="CENTER" spacing="24" styleClass="game-over-panel">
+            <padding><Insets top="60" right="80" bottom="60" left="80"/></padding>
+
+            <Label text="💀 GAME OVER" styleClass="game-over-title"/>
+
+            <VBox alignment="CENTER" spacing="8">
+                <Label text="ACIERTOS" style="-fx-text-fill:#555;-fx-font-size:13px;-fx-font-weight:600;"/>
+                <Label fx:id="gameOverScore" text="0" styleClass="game-over-score"/>
+            </VBox>
+
+            <Label fx:id="gameOverRecord" text="Récord: 0" styleClass="game-over-record"/>
+            <Label fx:id="gameOverMsg"    text=""          styleClass="game-over-msg" wrapText="true" textAlignment="CENTER"/>
+
+            <HBox spacing="16" alignment="CENTER">
+                <Button text="🔄 Jugar de nuevo" styleClass="btn-game-restart" onAction="#onRestart"/>
+            </HBox>
+        </VBox>
+
+    </StackPane>
+</VBox>

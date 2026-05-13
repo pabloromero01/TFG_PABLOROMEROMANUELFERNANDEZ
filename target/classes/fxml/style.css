@@ -1,0 +1,398 @@
+/* =============================================
+   FútbolStats — Estilos globales
+   Paleta: Negro/Gris oscuro + Verde esmeralda
+   ============================================= */
+
+/* LOGIN */
+.auth-root      { -fx-background-color: #0d0d0d; }
+.auth-left      { -fx-background-color: #0d0d0d; }
+.auth-right     { -fx-background-color: #111111; -fx-border-color:#1e1e1e; -fx-border-width:0 0 0 1; }
+
+.brand-title    { -fx-text-fill:#f0f0f0; -fx-font-size:40px; -fx-font-weight:800; }
+.brand-accent   { -fx-text-fill:#00c97a; -fx-font-size:40px; -fx-font-weight:800; }
+.brand-subtitle { -fx-text-fill:#9a9a9a; -fx-font-size:13px; }
+
+.auth-title    { -fx-text-fill:#f0f0f0; -fx-font-size:22px; -fx-font-weight:700; }
+.auth-subtitle { -fx-text-fill:#9a9a9a; -fx-font-size:13px; }
+.auth-label    { -fx-text-fill:#555555; -fx-font-size:11px; -fx-font-weight:600; }
+
+.auth-field {
+    -fx-background-color:#1e1e1e;
+    -fx-text-fill:#f0f0f0;
+    -fx-prompt-text-fill:#444;
+    -fx-border-color:#2a2a2a;
+    -fx-border-radius:8;
+    -fx-background-radius:8;
+    -fx-padding:12 16;
+    -fx-font-size:14px;
+    -fx-pref-height:44px;
+}
+.auth-field:focused {
+    -fx-border-color:#00c97a;
+    -fx-effect:dropshadow(gaussian,rgba(0,201,122,0.2),8,0,0,0);
+}
+
+.btn-auth-primary {
+    -fx-background-color:#00c97a;
+    -fx-text-fill:#0d0d0d;
+    -fx-font-size:14px;
+    -fx-font-weight:700;
+    -fx-background-radius:8;
+    -fx-cursor:hand;
+    -fx-pref-height:44px;
+}
+.btn-auth-primary:hover { -fx-background-color:#00e58a; }
+
+.link-text {
+    -fx-text-fill:#00c97a;
+    -fx-font-size:13px;
+    -fx-cursor:hand;
+}
+
+/* DASHBOARD */
+.dashboard-root { -fx-background-color:#0d0d0d; }
+
+.sidebar {
+    -fx-background-color:#111111;
+    -fx-border-color:#1e1e1e;
+    -fx-border-width:0 1 0 0;
+    -fx-min-width:220px;
+    -fx-max-width:220px;
+}
+
+.sidebar-logo     { -fx-text-fill:#f0f0f0; -fx-font-size:20px; -fx-font-weight:800; }
+.sidebar-logo-dot { -fx-text-fill:#00c97a; -fx-font-size:20px; -fx-font-weight:800; }
+.sidebar-section  { -fx-text-fill:#444444; -fx-font-size:10px; -fx-font-weight:600; }
+
+.nav-btn {
+    -fx-background-color:transparent;
+    -fx-text-fill:#9a9a9a;
+    -fx-font-size:13px;
+    -fx-font-weight:500;
+    -fx-alignment:CENTER_LEFT;
+    -fx-padding:10 16;
+    -fx-background-radius:8;
+    -fx-cursor:hand;
+}
+.nav-btn:hover      { -fx-background-color:#1e1e1e; -fx-text-fill:#f0f0f0; }
+.nav-btn-active     { -fx-background-color:rgba(0,201,122,0.1); -fx-text-fill:#00c97a; -fx-font-weight:700; }
+
+.content-area { -fx-background-color:#0d0d0d; }
+
+.page-title    { -fx-text-fill:#f0f0f0; -fx-font-size:26px; -fx-font-weight:700; }
+.page-subtitle { -fx-text-fill:#9a9a9a; -fx-font-size:13px; }
+
+/* Cards inicio */
+.stat-card {
+    -fx-background-color:#1e1e1e;
+    -fx-background-radius:12;
+    -fx-border-color:#2a2a2a;
+    -fx-border-radius:12;
+    -fx-border-width:1;
+    -fx-padding:20;
+    -fx-cursor:hand;
+}
+.stat-card:hover {
+    -fx-border-color:#00c97a;
+    -fx-effect:dropshadow(gaussian,rgba(0,201,122,0.12),16,0,0,4);
+}
+.card-icon  { -fx-font-size:28px; }
+.card-title { -fx-text-fill:#f0f0f0; -fx-font-size:16px; -fx-font-weight:600; }
+.card-desc  { -fx-text-fill:#9a9a9a; -fx-font-size:12px; }
+
+/* Jugador */
+.player-header-card {
+    -fx-background-color:#1e1e1e;
+    -fx-background-radius:12;
+    -fx-border-color:#2a2a2a;
+    -fx-border-radius:12;
+    -fx-border-width:1;
+    -fx-padding:20;
+}
+.player-name-big  { -fx-text-fill:#f0f0f0; -fx-font-size:26px; -fx-font-weight:800; }
+.player-meta      { -fx-text-fill:#9a9a9a; -fx-font-size:13px; }
+.player-team-badge{ -fx-text-fill:#00c97a; -fx-font-size:13px; -fx-font-weight:600; }
+
+.stat-box {
+    -fx-background-color:#252525;
+    -fx-background-radius:10;
+    -fx-padding:16 10;
+    -fx-alignment:center;
+}
+.stat-box-value { -fx-text-fill:#f0f0f0; -fx-font-size:24px; -fx-font-weight:700; }
+.stat-box-label { -fx-text-fill:#9a9a9a; -fx-font-size:11px; }
+
+/* Comparar */
+.compare-player-col {
+    -fx-background-color:#1e1e1e;
+    -fx-background-radius:12;
+    -fx-border-color:#2a2a2a;
+    -fx-border-radius:12;
+    -fx-border-width:1;
+    -fx-padding:18;
+}
+.score-badge {
+    -fx-background-color:rgba(0,201,122,0.1);
+    -fx-background-radius:20;
+    -fx-border-color:#00c97a;
+    -fx-border-radius:20;
+    -fx-border-width:1;
+    -fx-padding:8 24;
+    -fx-text-fill:#00c97a;
+    -fx-font-size:22px;
+    -fx-font-weight:800;
+}
+
+/* Ligas */
+.top-tab {
+    -fx-background-color:#252525;
+    -fx-background-radius:8;
+    -fx-border-color:transparent;
+    -fx-text-fill:#9a9a9a;
+    -fx-font-size:12px;
+    -fx-cursor:hand;
+    -fx-padding:8 16;
+}
+.top-tab:hover    { -fx-background-color:#2e2e2e; -fx-text-fill:#f0f0f0; }
+.top-tab-active   { -fx-background-color:#00c97a; -fx-text-fill:#0d0d0d; -fx-font-weight:700; }
+
+/* Comunes */
+.search-field {
+    -fx-background-color:#1e1e1e;
+    -fx-text-fill:#f0f0f0;
+    -fx-prompt-text-fill:#444;
+    -fx-border-color:#2a2a2a;
+    -fx-border-radius:8;
+    -fx-background-radius:8;
+    -fx-padding:10 16;
+    -fx-font-size:13px;
+}
+.search-field:focused { -fx-border-color:#00c97a; }
+
+.btn-primary {
+    -fx-background-color:#00c97a;
+    -fx-text-fill:#0d0d0d;
+    -fx-font-weight:700;
+    -fx-font-size:13px;
+    -fx-background-radius:8;
+    -fx-cursor:hand;
+    -fx-padding:10 20;
+}
+.btn-primary:hover    { -fx-background-color:#00e58a; }
+.btn-primary:disabled { -fx-background-color:#252525; -fx-text-fill:#555; }
+
+.btn-secondary {
+    -fx-background-color:#252525;
+    -fx-text-fill:#f0f0f0;
+    -fx-font-size:13px;
+    -fx-background-radius:8;
+    -fx-border-color:#2a2a2a;
+    -fx-border-radius:8;
+    -fx-cursor:hand;
+    -fx-padding:10 16;
+}
+.btn-secondary:hover { -fx-border-color:#00c97a; -fx-text-fill:#00c97a; }
+
+.combo-box {
+    -fx-background-color:#1e1e1e;
+    -fx-border-color:#2a2a2a;
+    -fx-border-radius:8;
+    -fx-background-radius:8;
+}
+.combo-box .list-cell { -fx-text-fill:#f0f0f0; -fx-background-color:#1e1e1e; }
+
+.status-bar {
+    -fx-background-color:#111111;
+    -fx-border-color:#1e1e1e;
+    -fx-border-width:1 0 0 0;
+    -fx-padding:8 20;
+}
+.status-label { -fx-text-fill:#555555; -fx-font-size:12px; }
+
+/* ===== NUEVOS ESTILOS ===== */
+
+/* Botón volver */
+.btn-back {
+    -fx-background-color: transparent;
+    -fx-text-fill: #555;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+    -fx-padding: 6 12;
+    -fx-background-radius: 6;
+    -fx-border-color: #2a2a2a;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+}
+.btn-back:hover { -fx-text-fill: #f0f0f0; -fx-border-color: #555; }
+
+/* Lista de jugadores con color resaltado */
+.player-list {
+    -fx-background-color: #151515;
+    -fx-border-color: #2a2a2a;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+.player-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #00c97a;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-padding: 10 14;
+    -fx-border-color: transparent transparent #1a1a1a transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.player-list .list-cell:hover {
+    -fx-background-color: rgba(0,201,122,0.08);
+    -fx-text-fill: #00e58a;
+}
+.player-list .list-cell:selected {
+    -fx-background-color: rgba(0,201,122,0.18);
+    -fx-text-fill: #ffffff;
+}
+.player-list .list-cell:empty { -fx-background-color: transparent; }
+
+/* Peores — tab activo en rojo */
+.worst-tab-active { -fx-background-color: #e05252; -fx-text-fill: white; -fx-font-weight: 700; }
+
+/* Ajustes */
+.settings-card {
+    -fx-background-color: #1e1e1e;
+    -fx-background-radius: 12;
+    -fx-border-color: #2a2a2a;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-padding: 20;
+}
+.settings-section-title { -fx-text-fill: #f0f0f0; -fx-font-size: 13px; -fx-font-weight: 700; }
+.settings-desc          { -fx-text-fill: #555;    -fx-font-size: 12px; }
+
+/* Botones de color en ajustes */
+.color-btn {
+    -fx-background-color: #252525;
+    -fx-text-fill: #9a9a9a;
+    -fx-background-radius: 8;
+    -fx-border-color: #2a2a2a;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-padding: 10 18;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+.color-btn:hover    { -fx-border-color: #555; -fx-text-fill: #f0f0f0; }
+.color-btn-active   { -fx-border-color: #00c97a; -fx-text-fill: #00c97a; -fx-font-weight: 700; }
+
+/* =============================================
+   MINIJUEGO — ¿Quién tiene más?
+   ============================================= */
+
+.game-root { -fx-background-color: #0a0a0a; }
+
+/* Header */
+.game-header {
+    -fx-background-color: #0d1520;
+    -fx-border-color: #1e3a5a;
+    -fx-border-width: 0 0 2 0;
+}
+.game-score-label  { -fx-text-fill: #f0f0f0; -fx-font-size: 14px; -fx-font-weight: 800; -fx-letter-spacing: 2; }
+.game-record-label { -fx-text-fill: #00c97a;  -fx-font-size: 14px; -fx-font-weight: 800; }
+.game-combo { -fx-background-color: #1a2e42; -fx-border-color: #1e3a5a; -fx-border-radius: 6; -fx-background-radius: 6; }
+.game-combo .list-cell { -fx-text-fill: #f0f0f0; -fx-background-color: #1a2e42; }
+
+/* Barra categoría */
+.game-category-bar  { -fx-background-color: #111827; -fx-border-color: #1e3a5a; -fx-border-width: 0 0 1 0; }
+.game-category-name { -fx-text-fill: #00c97a; -fx-font-size: 13px; -fx-font-weight: 800; -fx-letter-spacing: 3; }
+.game-streak        { -fx-text-fill: #f5a623; -fx-font-size: 13px; -fx-font-weight: 700; }
+
+/* Tarjetas jugadores */
+.game-card {
+    -fx-background-color: #111827;
+    -fx-border-color: #1e3a5a;
+    -fx-border-width: 0 1 0 0;
+}
+.game-card-right { -fx-border-width: 0 0 0 1; }
+
+.card-neutral { -fx-background-color: #111827; }
+.card-correct {
+    -fx-background-color: rgba(0, 201, 122, 0.12);
+    -fx-border-color: #00c97a;
+    -fx-border-width: 0 4 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,201,122,0.3), 30, 0, 0, 0);
+}
+.game-card-right.card-correct { -fx-border-width: 0 0 0 4; }
+
+.card-wrong {
+    -fx-background-color: rgba(224, 82, 82, 0.12);
+    -fx-border-color: #e05252;
+    -fx-border-width: 0 4 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(224,82,82,0.3), 30, 0, 0, 0);
+}
+.game-card-right.card-wrong { -fx-border-width: 0 0 0 4; }
+
+.game-player-name { -fx-text-fill: #f0f0f0; -fx-font-size: 22px; -fx-font-weight: 800; -fx-letter-spacing: 2; }
+.game-player-team { -fx-text-fill: #9a9a9a; -fx-font-size: 13px; }
+.game-player-nat  { -fx-text-fill: #555555; -fx-font-size: 12px; }
+
+/* Caja de valor */
+.game-value-box {
+    -fx-background-color: #0d1520;
+    -fx-background-radius: 12;
+    -fx-border-color: #1e3a5a;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+}
+.game-value-hidden { -fx-background-color: #1a1a2e; -fx-border-color: #2a2a4a; }
+.game-value-category { -fx-text-fill: #555; -fx-font-size: 11px; -fx-font-weight: 700; -fx-letter-spacing: 2; }
+.game-value-number   { -fx-text-fill: #00c97a; -fx-font-size: 48px; -fx-font-weight: 900; }
+.game-value-question { -fx-text-fill: #2a2a4a; -fx-font-size: 64px; -fx-font-weight: 900; }
+
+/* Botones elegir */
+.game-btn-choose {
+    -fx-background-color: #1a2e42;
+    -fx-text-fill: #f0f0f0;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 10;
+    -fx-border-color: #1e3a5a;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-padding: 14 24;
+}
+.game-btn-choose:hover {
+    -fx-background-color: #00c97a;
+    -fx-text-fill: #0a0a0a;
+    -fx-border-color: #00c97a;
+    -fx-effect: dropshadow(gaussian, rgba(0,201,122,0.4), 16, 0, 0, 0);
+}
+.game-btn-choose:disabled { -fx-opacity: 0.4; }
+
+/* Centro */
+.game-center { -fx-background-color: #0a0a0a; }
+.game-vs { -fx-text-fill: #1e3a5a; -fx-font-size: 32px; -fx-font-weight: 900; }
+.game-question-card {
+    -fx-background-color: #111827;
+    -fx-background-radius: 12;
+    -fx-border-color: #1e3a5a;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+}
+.game-question { -fx-text-fill: #9a9a9a; -fx-font-size: 13px; }
+
+/* Game Over */
+.game-over-panel  { -fx-background-color: #0a0a0a; }
+.game-over-title  { -fx-text-fill: #e05252; -fx-font-size: 36px; -fx-font-weight: 900; }
+.game-over-score  { -fx-text-fill: #f0f0f0; -fx-font-size: 80px; -fx-font-weight: 900; }
+.game-over-record { -fx-text-fill: #00c97a; -fx-font-size: 18px; -fx-font-weight: 700; }
+.game-over-msg    { -fx-text-fill: #9a9a9a; -fx-font-size: 16px; }
+
+.btn-game-restart {
+    -fx-background-color: #00c97a;
+    -fx-text-fill: #0a0a0a;
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-padding: 14 32;
+}
+.btn-game-restart:hover { -fx-background-color: #00e58a; }

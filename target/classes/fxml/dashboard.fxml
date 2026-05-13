@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.tfg.futbolstats.controller.DashboardController"
+      styleClass="dashboard-root"
+      stylesheets="@style.css"
+      prefWidth="1100" prefHeight="700">
+
+    <!-- SIDEBAR -->
+    <VBox styleClass="sidebar" spacing="4">
+        <padding><Insets top="28" right="15" bottom="28" left="15"/></padding>
+
+        <HBox spacing="0" alignment="CENTER_LEFT">
+            <padding><Insets left="6" bottom="32"/></padding>
+            <Label text="Fútbol" styleClass="sidebar-logo"/>
+            <Label text="Stats" styleClass="sidebar-logo-dot"/>
+        </HBox>
+
+        <Label text="MENÚ" styleClass="sidebar-section">
+            <padding><Insets left="6" bottom="8"/></padding>
+        </Label>
+
+        <Button fx:id="btnDashboard" text="🏠  Inicio"      styleClass="nav-btn, nav-btn-active" onAction="#onNavDashboard" maxWidth="Infinity"/>
+        <Button fx:id="btnPlayer"    text="👤  Jugadores"   styleClass="nav-btn"                 onAction="#onNavPlayer"    maxWidth="Infinity"/>
+        <Button fx:id="btnCompare"   text="⚖️  Comparar"    styleClass="nav-btn"                 onAction="#onNavCompare"   maxWidth="Infinity"/>
+        <Button fx:id="btnLeagues"   text="🏆  Ligas"       styleClass="nav-btn"                 onAction="#onNavLeagues"   maxWidth="Infinity"/>
+        <Button fx:id="btnWorst"     text="📉  Peores"      styleClass="nav-btn"                 onAction="#onNavWorst"     maxWidth="Infinity"/>
+        <Button fx:id="btnSettings"  text="⚙️  Ajustes"     styleClass="nav-btn"                 onAction="#onNavSettings"  maxWidth="Infinity"/>
+        <Button fx:id="btnGame"      text="🎮  Minijuego"   styleClass="nav-btn"                 onAction="#onNavGame"      maxWidth="Infinity"/>
+        <Button fx:id="btnFavorites" text="⭐  Favoritos"   styleClass="nav-btn"                 onAction="#onNavFavorites" maxWidth="Infinity"/>
+
+        <Region VBox.vgrow="ALWAYS"/>
+        <Separator style="-fx-background-color:#1e1e1e;"/>
+        <Region minHeight="12"/>
+
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <padding><Insets left="6"/></padding>
+            <Label text="👤" style="-fx-font-size:16px;"/>
+            <VBox spacing="1">
+                <Label fx:id="sidebarUsername" text="Usuario"
+                       style="-fx-text-fill:#f0f0f0;-fx-font-size:13px;-fx-font-weight:600;"/>
+                <Label text="Cuenta activa" style="-fx-text-fill:#555;-fx-font-size:11px;"/>
+            </VBox>
+        </HBox>
+        <Region minHeight="8"/>
+        <Button text="Cerrar sesión" styleClass="btn-secondary" onAction="#onLogout"
+                maxWidth="Infinity" style="-fx-font-size:12px;-fx-padding:8 16;"/>
+    </VBox>
+
+    <!-- CONTENIDO -->
+    <VBox HBox.hgrow="ALWAYS">
+        <StackPane fx:id="contentStack" styleClass="content-area" VBox.vgrow="ALWAYS">
+            <padding><Insets top="36" right="36" bottom="36" left="36"/></padding>
+
+            <!-- ===== INICIO ===== -->
+            <VBox fx:id="pageDashboard" spacing="28" visible="true" managed="true">
+                <VBox spacing="4">
+                    <Label fx:id="welcomeLabel" text="Bienvenido 👋" styleClass="page-title"/>
+                    <Label text="¿Qué quieres explorar hoy?" styleClass="page-subtitle"/>
+                </VBox>
+                <HBox spacing="16">
+                    <VBox styleClass="stat-card" spacing="14" HBox.hgrow="ALWAYS" onMouseClicked="#onNavPlayer">
+                        <Label text="👤" styleClass="card-icon"/>
+                        <VBox spacing="4">
+                            <Label text="Jugadores" styleClass="card-title"/>
+                            <Label text="Busca cualquier jugador y consulta sus estadísticas completas." styleClass="card-desc" wrapText="true"/>
+                        </VBox>
+                        <Label text="Explorar →" style="-fx-text-fill:#00c97a;-fx-font-size:13px;-fx-font-weight:600;"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" spacing="14" HBox.hgrow="ALWAYS" onMouseClicked="#onNavCompare">
+                        <Label text="⚖️" styleClass="card-icon"/>
+                        <VBox spacing="4">
+                            <Label text="Comparar" styleClass="card-title"/>
+                            <Label text="Enfrenta dos jugadores cara a cara y descubre quién domina." styleClass="card-desc" wrapText="true"/>
+                        </VBox>
+                        <Label text="Comparar →" style="-fx-text-fill:#00c97a;-fx-font-size:13px;-fx-font-weight:600;"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" spacing="14" HBox.hgrow="ALWAYS" onMouseClicked="#onNavLeagues">
+                        <Label text="🏆" styleClass="card-icon"/>
+                        <VBox spacing="4">
+                            <Label text="Ligas" styleClass="card-title"/>
+                            <Label text="Consulta los mejores jugadores de cada liga." styleClass="card-desc" wrapText="true"/>
+                        </VBox>
+                        <Label text="Ver ligas →" style="-fx-text-fill:#00c97a;-fx-font-size:13px;-fx-font-weight:600;"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" spacing="14" HBox.hgrow="ALWAYS" onMouseClicked="#onNavWorst">
+                        <Label text="📉" styleClass="card-icon"/>
+                        <VBox spacing="4">
+                            <Label text="Peores" styleClass="card-title"/>
+                            <Label text="Descubre los jugadores con peores estadísticas de la temporada." styleClass="card-desc" wrapText="true"/>
+                        </VBox>
+                        <Label text="Ver peores →" style="-fx-text-fill:#e05252;-fx-font-size:13px;-fx-font-weight:600;"/>
+                    </VBox>
+                </HBox>
+                <HBox spacing="16">
+                    <VBox styleClass="stat-card" spacing="14" HBox.hgrow="ALWAYS" onMouseClicked="#onNavGame"
+                          style="-fx-border-color:#1e3a5a;-fx-background-color:#0d1520;">
+                        <Label text="🎮" styleClass="card-icon"/>
+                        <VBox spacing="4">
+                            <Label text="Minijuego" styleClass="card-title"/>
+                            <Label text="¿Quién tiene más? Adivina qué jugador tiene más goles, asistencias o partidos y acumula racha." styleClass="card-desc" wrapText="true"/>
+                        </VBox>
+                        <Label text="¡Jugar! →" style="-fx-text-fill:#3b8eea;-fx-font-size:13px;-fx-font-weight:600;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- ===== JUGADORES ===== -->
+            <VBox fx:id="pagePlayer" spacing="20" visible="false" managed="false">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Button text="← Inicio" styleClass="btn-back" onAction="#onNavDashboard"/>
+                    <Label text="Jugadores" styleClass="page-title"/>
+                </HBox>
+                <Label text="Busca y consulta estadísticas completas" styleClass="page-subtitle"/>
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <TextField fx:id="playerSearchField" styleClass="search-field"
+                               promptText="Nombre del jugador..." HBox.hgrow="ALWAYS"/>
+                    <ComboBox fx:id="playerSeasonCombo" styleClass="combo-box" minWidth="120"/>
+                    <Button text="Buscar" styleClass="btn-primary" onAction="#onSearchPlayer"/>
+                </HBox>
+                <HBox spacing="16" VBox.vgrow="ALWAYS">
+                    <VBox spacing="8" minWidth="250" maxWidth="250">
+                        <Label text="RESULTADOS" style="-fx-text-fill:#555;-fx-font-size:10px;-fx-font-weight:600;"/>
+                        <ListView fx:id="playerResultList" VBox.vgrow="ALWAYS" styleClass="player-list"/>
+                    </VBox>
+                    <VBox fx:id="playerDetailPanel" spacing="16" HBox.hgrow="ALWAYS" visible="false" managed="false">
+                        <VBox styleClass="player-header-card" spacing="12">
+                            <Label fx:id="playerNameLabel" text="" styleClass="player-name-big"/>
+                            <HBox spacing="20">
+                                <Label fx:id="playerNatLabel" text="" styleClass="player-meta"/>
+                                <Label fx:id="playerAgeLabel" text="" styleClass="player-meta"/>
+                                <Label fx:id="playerPosLabel" text="" styleClass="player-meta"/>
+                            </HBox>
+                            <Label fx:id="playerTeamLabel" text="" styleClass="player-team-badge"/>
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Button fx:id="favBtn" text="⭐ Añadir a favoritos" styleClass="btn-secondary"
+                                        onAction="#onToggleFavorite"
+                                        style="-fx-font-size:12px;-fx-padding:7 14;"/>
+                                <Label fx:id="favStatusLabel" text="" style="-fx-text-fill:#00c97a;-fx-font-size:12px;-fx-font-weight:600;"/>
+                            </HBox>
+                        </VBox>
+                        <HBox spacing="10">
+                            <VBox styleClass="stat-box" spacing="4" HBox.hgrow="ALWAYS">
+                                <Label fx:id="statGoals"   text="0" styleClass="stat-box-value"/>
+                                <Label text="Goles"                   styleClass="stat-box-label"/>
+                            </VBox>
+                            <VBox styleClass="stat-box" spacing="4" HBox.hgrow="ALWAYS">
+                                <Label fx:id="statAssists" text="0" styleClass="stat-box-value"/>
+                                <Label text="Asistencias"             styleClass="stat-box-label"/>
+                            </VBox>
+                            <VBox styleClass="stat-box" spacing="4" HBox.hgrow="ALWAYS">
+                                <Label fx:id="statApps"    text="0" styleClass="stat-box-value"/>
+                                <Label text="Partidos"               styleClass="stat-box-label"/>
+                            </VBox>
+                            <VBox styleClass="stat-box" spacing="4" HBox.hgrow="ALWAYS">
+                                <Label fx:id="statMins"    text="0" styleClass="stat-box-value"/>
+                                <Label text="Minutos"                styleClass="stat-box-label"/>
+                            </VBox>
+                            <VBox styleClass="stat-box" spacing="4" HBox.hgrow="ALWAYS">
+                                <Label fx:id="statRating"  text="—" styleClass="stat-box-value" style="-fx-text-fill:#00c97a;"/>
+                                <Label text="Valoración"             styleClass="stat-box-label"/>
+                            </VBox>
+                        </HBox>
+                        <HBox spacing="12" VBox.vgrow="ALWAYS">
+                            <VBox spacing="8" HBox.hgrow="ALWAYS" style="-fx-background-color:#1e1e1e;-fx-background-radius:10;-fx-padding:16;">
+                                <Label text="ATAQUE" style="-fx-text-fill:#00c97a;-fx-font-size:11px;-fx-font-weight:700;"/>
+                                <GridPane fx:id="attackGrid" hgap="12" vgap="10"/>
+                            </VBox>
+                            <VBox spacing="8" HBox.hgrow="ALWAYS" style="-fx-background-color:#1e1e1e;-fx-background-radius:10;-fx-padding:16;">
+                                <Label text="DEFENSA Y DISCIPLINA" style="-fx-text-fill:#00c97a;-fx-font-size:11px;-fx-font-weight:700;"/>
+                                <GridPane fx:id="defenseGrid" hgap="12" vgap="10"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+                    <VBox fx:id="playerEmptyState" alignment="CENTER" HBox.hgrow="ALWAYS" spacing="10" visible="true" managed="true">
+                        <Label text="🔍" style="-fx-font-size:44px;"/>
+                        <Label text="Busca un jugador" style="-fx-text-fill:#9a9a9a;-fx-font-size:16px;-fx-font-weight:600;"/>
+                        <Label text="Escribe el nombre arriba y selecciónalo de la lista" style="-fx-text-fill:#555;-fx-font-size:13px;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- ===== COMPARAR ===== -->
+            <VBox fx:id="pageCompare" spacing="20" visible="false" managed="false">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Button text="← Inicio" styleClass="btn-back" onAction="#onNavDashboard"/>
+                    <Label text="Comparar Jugadores" styleClass="page-title"/>
+                </HBox>
+                <Label text="Estadística a estadística, cara a cara" styleClass="page-subtitle"/>
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <Label text="Temporada:" style="-fx-text-fill:#9a9a9a;-fx-font-size:13px;"/>
+                    <ComboBox fx:id="compareSeasonCombo" styleClass="combo-box" minWidth="120"/>
+                    <Button text="🔄 Recargar temporada" styleClass="btn-secondary"
+                            onAction="#onReloadCompareSeason"
+                            style="-fx-font-size:12px;-fx-padding:8 14;"/>
+                    <Label fx:id="compareSeasonHint" text="Cambia la temporada y pulsa recargar para actualizar los datos"
+                           style="-fx-text-fill:#555;-fx-font-size:11px;"/>
+                </HBox>
+                <HBox spacing="16">
+                    <!-- JUGADOR 1 -->
+                    <VBox styleClass="compare-player-col" spacing="12" HBox.hgrow="ALWAYS">
+                        <Label text="JUGADOR 1" style="-fx-text-fill:#555;-fx-font-size:10px;-fx-font-weight:600;"/>
+
+                        <!-- Estado: buscando (visible por defecto) -->
+                        <VBox fx:id="compareSearchBox1" spacing="8" visible="true" managed="true">
+                            <HBox spacing="8">
+                                <TextField fx:id="compareSearch1" styleClass="search-field" promptText="Ej: Messi, Haaland..." HBox.hgrow="ALWAYS"/>
+                                <Button text="🔍" styleClass="btn-primary" onAction="#onSearchCompare1"/>
+                            </HBox>
+                            <ListView fx:id="compareList1" prefHeight="130" styleClass="player-list"/>
+                        </VBox>
+
+                        <!-- Estado: jugador seleccionado -->
+                        <VBox fx:id="compareInfo1" spacing="10" visible="false" managed="false"
+                              style="-fx-background-color:#252525;-fx-background-radius:10;-fx-padding:14;">
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <Label text="✔" style="-fx-text-fill:#00c97a;-fx-font-size:14px;"/>
+                                <Label text="JUGADOR SELECCIONADO" style="-fx-text-fill:#00c97a;-fx-font-size:10px;-fx-font-weight:700;"/>
+                            </HBox>
+                            <Label fx:id="compareName1" text="" style="-fx-text-fill:#f0f0f0;-fx-font-size:18px;-fx-font-weight:800;"/>
+                            <Label fx:id="compareTeam1" text="" style="-fx-text-fill:#9a9a9a;-fx-font-size:12px;"/>
+                            <Button text="🔄 Cambiar jugador" styleClass="btn-secondary"
+                                    onAction="#onResetCompare1" maxWidth="Infinity"
+                                    style="-fx-font-size:12px;-fx-padding:8 12;"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- CENTRO -->
+                    <VBox alignment="CENTER" spacing="16" minWidth="160">
+                        <Label text="VS" style="-fx-text-fill:#2a2a2a;-fx-font-size:36px;-fx-font-weight:800;"/>
+                        <Button fx:id="compareBtn" text="⚖️ Comparar" styleClass="btn-primary"
+                                onAction="#onCompare" style="-fx-padding:14 20;-fx-font-size:14px;" maxWidth="Infinity"/>
+                        <Button text="🔄 Reiniciar todo" styleClass="btn-secondary"
+                                onAction="#onResetCompareAll" maxWidth="Infinity"
+                                style="-fx-font-size:12px;-fx-padding:8 12;"/>
+                        <Label fx:id="scoreLabel" text="" styleClass="score-badge" visible="false" managed="false"/>
+                    </VBox>
+
+                    <!-- JUGADOR 2 -->
+                    <VBox styleClass="compare-player-col" spacing="12" HBox.hgrow="ALWAYS">
+                        <Label text="JUGADOR 2" style="-fx-text-fill:#555;-fx-font-size:10px;-fx-font-weight:600;"/>
+
+                        <!-- Estado: buscando -->
+                        <VBox fx:id="compareSearchBox2" spacing="8" visible="true" managed="true">
+                            <HBox spacing="8">
+                                <TextField fx:id="compareSearch2" styleClass="search-field" promptText="Ej: Cristiano, Mbappe..." HBox.hgrow="ALWAYS"/>
+                                <Button text="🔍" styleClass="btn-primary" onAction="#onSearchCompare2"/>
+                            </HBox>
+                            <ListView fx:id="compareList2" prefHeight="130" styleClass="player-list"/>
+                        </VBox>
+
+                        <!-- Estado: seleccionado -->
+                        <VBox fx:id="compareInfo2" spacing="10" visible="false" managed="false"
+                              style="-fx-background-color:#252525;-fx-background-radius:10;-fx-padding:14;">
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <Label text="✔" style="-fx-text-fill:#00c97a;-fx-font-size:14px;"/>
+                                <Label text="JUGADOR SELECCIONADO" style="-fx-text-fill:#00c97a;-fx-font-size:10px;-fx-font-weight:700;"/>
+                            </HBox>
+                            <Label fx:id="compareName2" text="" style="-fx-text-fill:#f0f0f0;-fx-font-size:18px;-fx-font-weight:800;"/>
+                            <Label fx:id="compareTeam2" text="" style="-fx-text-fill:#9a9a9a;-fx-font-size:12px;"/>
+                            <Button text="🔄 Cambiar jugador" styleClass="btn-secondary"
+                                    onAction="#onResetCompare2" maxWidth="Infinity"
+                                    style="-fx-font-size:12px;-fx-padding:8 12;"/>
+                        </VBox>
+                    </VBox>
+                </HBox>
+                <ScrollPane fx:id="compareScrollPane" VBox.vgrow="ALWAYS" fitToWidth="true"
+                            visible="false" managed="false"
+                            style="-fx-background-color:transparent;-fx-background:transparent;">
+                    <VBox fx:id="compareStatsContainer" spacing="6"/>
+                </ScrollPane>
+            </VBox>
+
+            <!-- ===== LIGAS ===== -->
+            <VBox fx:id="pageLeagues" spacing="20" visible="false" managed="false">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Button text="← Inicio" styleClass="btn-back" onAction="#onNavDashboard"/>
+                    <Label text="Ligas" styleClass="page-title"/>
+                </HBox>
+                <Label text="Top 5 jugadores por estadística" styleClass="page-subtitle"/>
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <ComboBox fx:id="leagueCombo" styleClass="combo-box" minWidth="220" promptText="Selecciona una liga..."/>
+                    <ComboBox fx:id="leagueSeasonCombo" styleClass="combo-box" minWidth="120"/>
+                    <Button text="Cargar" styleClass="btn-primary" onAction="#onLoadLeague"/>
+                </HBox>
+                <HBox fx:id="leagueTabsBox" spacing="8" visible="false" managed="false">
+                    <Button fx:id="tabGoals"   text="⚽ Goles"       styleClass="top-tab, top-tab-active" onAction="#onTabGoals"/>
+                    <Button fx:id="tabAssists" text="🎯 Asistencias"  styleClass="top-tab"                onAction="#onTabAssists"/>
+                    <Button fx:id="tabShots"   text="🥅 Tiros"        styleClass="top-tab"                onAction="#onTabShots"/>
+                    <Button fx:id="tabPasses"  text="🔑 Pases clave"  styleClass="top-tab"                onAction="#onTabPasses"/>
+                    <Button fx:id="tabRating"  text="⭐ Valoración"   styleClass="top-tab"                onAction="#onTabRating"/>
+                    <Button fx:id="tabYellow"  text="🟨 Amarillas"    styleClass="top-tab"                onAction="#onTabYellow"/>
+                </HBox>
+                <VBox fx:id="topPlayersContainer" spacing="10" VBox.vgrow="ALWAYS" visible="false" managed="false"/>
+                <VBox fx:id="leagueEmptyState" alignment="CENTER" VBox.vgrow="ALWAYS" spacing="10" visible="true" managed="true">
+                    <Label text="🏆" style="-fx-font-size:44px;"/>
+                    <Label text="Selecciona una liga" style="-fx-text-fill:#9a9a9a;-fx-font-size:16px;-fx-font-weight:600;"/>
+                    <Label text="Elige una liga y temporada para ver los mejores jugadores" style="-fx-text-fill:#555;-fx-font-size:13px;"/>
+                </VBox>
+            </VBox>
+
+            <!-- ===== PEORES ===== -->
+            <VBox fx:id="pageWorst" spacing="20" visible="false" managed="false">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Button text="← Inicio" styleClass="btn-back" onAction="#onNavDashboard"/>
+                    <Label text="Peores de la Temporada" styleClass="page-title"/>
+                </HBox>
+                <Label text="Los jugadores con peores estadísticas — más tarjetas, menos goles, peor valoración" styleClass="page-subtitle"/>
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <ComboBox fx:id="worstLeagueCombo" styleClass="combo-box" minWidth="220" promptText="Selecciona una liga..."/>
+                    <ComboBox fx:id="worstSeasonCombo" styleClass="combo-box" minWidth="120"/>
+                    <Button text="Cargar" styleClass="btn-primary" onAction="#onLoadWorst"/>
+                </HBox>
+                <HBox fx:id="worstTabsBox" spacing="8" visible="false" managed="false">
+                    <Button fx:id="worstTabRed"    text="🟥 Más rojas"       styleClass="top-tab, worst-tab-active" onAction="#onWorstTabRed"/>
+                    <Button fx:id="worstTabYellow" text="🟨 Más amarillas"   styleClass="top-tab"                   onAction="#onWorstTabYellow"/>
+                    <Button fx:id="worstTabRating" text="⬇ Peor valoración"  styleClass="top-tab"                   onAction="#onWorstTabRating"/>
+                    <Button fx:id="worstTabGoals"  text="❌ Menos goles"      styleClass="top-tab"                   onAction="#onWorstTabGoals"/>
+                </HBox>
+                <VBox fx:id="worstPlayersContainer" spacing="10" VBox.vgrow="ALWAYS" visible="false" managed="false"/>
+                <VBox fx:id="worstEmptyState" alignment="CENTER" VBox.vgrow="ALWAYS" spacing="10" visible="true" managed="true">
+                    <Label text="📉" style="-fx-font-size:44px;"/>
+                    <Label text="Selecciona una liga" style="-fx-text-fill:#9a9a9a;-fx-font-size:16px;-fx-font-weight:600;"/>
+                    <Label text="Elige liga y temporada para ver los peores jugadores" style="-fx-text-fill:#555;-fx-font-size:13px;"/>
+                </VBox>
+            </VBox>
+
+            <!-- ===== AJUSTES ===== -->
+            <VBox fx:id="pageSettings" spacing="0" visible="false" managed="false">
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                            style="-fx-background-color:transparent;-fx-background:transparent;-fx-border-color:transparent;">
+                    <VBox spacing="24" style="-fx-padding:0 0 30 0;">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Button text="← Inicio" styleClass="btn-back" onAction="#onNavDashboard"/>
+                            <Label text="Ajustes" styleClass="page-title"/>
+                        </HBox>
+                        <Label text="Personaliza tu experiencia en FútbolStats" styleClass="page-subtitle"/>
+
+                        <!-- Tema de color -->
+                        <VBox styleClass="settings-card" spacing="16">
+                            <Label text="🎨  COLOR DE ACENTO" styleClass="settings-section-title"/>
+                            <Label text="Selecciona un color y pulsa Guardar para aplicarlo" styleClass="settings-desc"/>
+                            <HBox spacing="12" alignment="CENTER_LEFT">
+                                <Button fx:id="btnColorGreen"  text="● Verde esmeralda"  styleClass="color-btn, color-btn-active" onAction="#onColorGreen"/>
+                                <Button fx:id="btnColorBlue"   text="● Azul eléctrico"   styleClass="color-btn"                   onAction="#onColorBlue"/>
+                                <Button fx:id="btnColorOrange" text="● Naranja fuego"    styleClass="color-btn"                   onAction="#onColorOrange"/>
+                                <Button fx:id="btnColorPurple" text="● Morado neon"      styleClass="color-btn"                   onAction="#onColorPurple"/>
+                                <Button fx:id="btnColorRed"    text="● Rojo pasión"      styleClass="color-btn"                   onAction="#onColorRed"/>
+                            </HBox>
+                            <HBox spacing="12" alignment="CENTER_LEFT">
+                                <Button text="💾 Guardar color" styleClass="btn-primary" onAction="#onSaveAccentColor"/>
+                                <Label fx:id="colorSavedLabel" text="" style="-fx-text-fill:#00c97a;-fx-font-size:12px;-fx-font-weight:600;"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Temporada por defecto -->
+                        <VBox styleClass="settings-card" spacing="16">
+                            <Label text="📅  TEMPORADA POR DEFECTO" styleClass="settings-section-title"/>
+                            <Label text="Se aplicará al abrir la app" styleClass="settings-desc"/>
+                            <HBox spacing="12" alignment="CENTER_LEFT">
+                                <ComboBox fx:id="defaultSeasonCombo" styleClass="combo-box" minWidth="140"/>
+                                <Button text="Guardar" styleClass="btn-primary" onAction="#onSaveDefaultSeason"/>
+                                <Label fx:id="seasonSavedLabel" text="" style="-fx-text-fill:#00c97a;-fx-font-size:12px;"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Info de la cuenta -->
+                        <VBox styleClass="settings-card" spacing="16">
+                            <Label text="👤  CUENTA" styleClass="settings-section-title"/>
+                            <HBox spacing="40">
+                                <VBox spacing="4">
+                                    <Label text="USUARIO" style="-fx-text-fill:#555;-fx-font-size:10px;-fx-font-weight:600;"/>
+                                    <Label fx:id="settingsUsername" text="" style="-fx-text-fill:#f0f0f0;-fx-font-size:15px;-fx-font-weight:600;"/>
+                                </VBox>
+                                <VBox spacing="4">
+                                    <Label text="PETICIONES API HOY" style="-fx-text-fill:#555;-fx-font-size:10px;-fx-font-weight:600;"/>
+                                    <Label fx:id="settingsApiLabel" text="100 disponibles" style="-fx-text-fill:#00c97a;-fx-font-size:15px;-fx-font-weight:600;"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Sobre la app -->
+                        <VBox styleClass="settings-card" spacing="10">
+                            <Label text="ℹ️  SOBRE FUTBOLSTATS" styleClass="settings-section-title"/>
+                            <Label text="Versión 1.0 — TFG Pablo Romero &amp; Manuel Fernández" styleClass="settings-desc"/>
+                            <Label text="Datos: api-football (api-sports.io) · Plan gratuito 100 peticiones/día"  styleClass="settings-desc"/>
+                            <Label text="Temporadas disponibles: 2022, 2023, 2024" styleClass="settings-desc"/>
+                        </VBox>
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+
+            <!-- ===== FAVORITOS ===== -->
+            <VBox fx:id="pageFavorites" spacing="20" visible="false" managed="false">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Button text="← Inicio" styleClass="btn-back" onAction="#onNavDashboard"/>
+                    <Label text="Mis Favoritos" styleClass="page-title"/>
+                </HBox>
+                <Label text="Jugadores guardados — ordénalos por categoría y consulta sus perfiles" styleClass="page-subtitle"/>
+
+                <!-- Controles -->
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <Label text="Ordenar por:" style="-fx-text-fill:#9a9a9a;-fx-font-size:13px;"/>
+                    <ComboBox fx:id="favSortCombo" styleClass="combo-box" minWidth="160"/>
+                    <Button text="🔃 Aplicar" styleClass="btn-secondary" onAction="#onSortFavorites"
+                            style="-fx-font-size:12px;-fx-padding:8 14;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="favCountLabel" text="0 favoritos" style="-fx-text-fill:#555;-fx-font-size:12px;"/>
+                </HBox>
+
+                <!-- Lista de favoritos -->
+                <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true"
+                            style="-fx-background-color:transparent;-fx-background:transparent;-fx-border-color:transparent;">
+                    <VBox fx:id="favContainer" spacing="10">
+                        <padding><Insets bottom="20"/></padding>
+                    </VBox>
+                </ScrollPane>
+
+                <!-- Estado vacío -->
+                <VBox fx:id="favEmptyState" alignment="CENTER" spacing="12" visible="true" managed="true">
+                    <Label text="⭐" style="-fx-font-size:44px;"/>
+                    <Label text="No tienes favoritos aún" style="-fx-text-fill:#9a9a9a;-fx-font-size:16px;-fx-font-weight:600;"/>
+                    <Label text="Busca un jugador en la sección Jugadores y pulsa ⭐ Añadir a favoritos"
+                           style="-fx-text-fill:#555;-fx-font-size:13px;" wrapText="true" textAlignment="CENTER"/>
+                </VBox>
+            </VBox>
+
+            <!-- ===== MINIJUEGO ===== -->
+            <VBox fx:id="pageGame" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding:0 0 16 0;">
+                    <Button text="← Inicio" styleClass="btn-back" onAction="#onNavDashboard"/>
+                    <Label text="Minijuego — ¿Quién tiene más?" styleClass="page-title"/>
+                </HBox>
+                <fx:include fx:id="game" source="game.fxml" VBox.vgrow="ALWAYS"/>
+            </VBox>
+
+        </StackPane>
+
+        <HBox styleClass="status-bar">
+            <Label fx:id="statusLabel" text="Listo" styleClass="status-label"/>
+        </HBox>
+    </VBox>
+</HBox>
