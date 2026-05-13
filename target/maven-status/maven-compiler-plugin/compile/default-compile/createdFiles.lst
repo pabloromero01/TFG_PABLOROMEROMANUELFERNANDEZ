@@ -5,6 +5,7 @@ com\tfg\futbolstats\service\DatabaseService.class
 com\tfg\futbolstats\controller\DashboardController$1.class
 com\tfg\futbolstats\service\GameService.class
 com\tfg\futbolstats\service\LeagueService.class
+com\tfg\futbolstats\service\NotasService.class
 com\tfg\futbolstats\service\ApiFootballService.class
 com\tfg\futbolstats\controller\DashboardController$2.class
 com\tfg\futbolstats\model\Player.class
