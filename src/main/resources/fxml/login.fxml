@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.tfg.futbolstats.controller.LoginController"
+      styleClass="auth-root"
+      stylesheets="@style.css"
+      prefWidth="900" prefHeight="600">
+
+    <!-- IZQUIERDA: branding -->
+    <VBox styleClass="auth-left" alignment="CENTER" HBox.hgrow="ALWAYS">
+        <padding><Insets top="60" right="60" bottom="60" left="60"/></padding>
+
+        <VBox spacing="4" alignment="CENTER_LEFT">
+            <HBox spacing="0">
+                <Label text="Fútbol" styleClass="brand-title"/>
+                <Label text="Stats" styleClass="brand-accent"/>
+            </HBox>
+            <Label text="Estadísticas profesionales de fútbol" styleClass="brand-subtitle"/>
+        </VBox>
+
+        <Region VBox.vgrow="ALWAYS" maxHeight="48"/>
+
+        <VBox spacing="24">
+            <HBox spacing="16" alignment="CENTER_LEFT">
+                <Label text="⚡" style="-fx-font-size:22px;"/>
+                <VBox spacing="2">
+                    <Label text="Estadísticas en tiempo real"
+                           style="-fx-text-fill:#f0f0f0;-fx-font-size:14px;-fx-font-weight:600;"/>
+                    <Label text="Datos actualizados de api-football.com"
+                           style="-fx-text-fill:#555;-fx-font-size:12px;"/>
+                </VBox>
+            </HBox>
+            <HBox spacing="16" alignment="CENTER_LEFT">
+                <Label text="⚖️" style="-fx-font-size:22px;"/>
+                <VBox spacing="2">
+                    <Label text="Comparación avanzada"
+                           style="-fx-text-fill:#f0f0f0;-fx-font-size:14px;-fx-font-weight:600;"/>
+                    <Label text="Enfrenta cualquier jugador del mundo"
+                           style="-fx-text-fill:#555;-fx-font-size:12px;"/>
+                </VBox>
+            </HBox>
+            <HBox spacing="16" alignment="CENTER_LEFT">
+                <Label text="🏆" style="-fx-font-size:22px;"/>
+                <VBox spacing="2">
+                    <Label text="Rankings por liga"
+                           style="-fx-text-fill:#f0f0f0;-fx-font-size:14px;-fx-font-weight:600;"/>
+                    <Label text="Top 5 en goles, asistencias, valoración y más"
+                           style="-fx-text-fill:#555;-fx-font-size:12px;"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <Region VBox.vgrow="ALWAYS"/>
+        <Label text="© 2026 · Pablo Romero y Manuel Fernández · TFG"
+               style="-fx-text-fill:#2a2a2a;-fx-font-size:11px;"/>
+    </VBox>
+
+    <!-- DERECHA: formularios -->
+    <VBox styleClass="auth-right" alignment="CENTER" minWidth="400" maxWidth="400">
+        <padding><Insets top="60" right="50" bottom="60" left="50"/></padding>
+
+        <!-- LOGIN -->
+        <VBox fx:id="loginPanel" spacing="0" visible="true" managed="true">
+            <VBox spacing="6">
+                <Label text="Bienvenido de vuelta" styleClass="auth-title"/>
+                <Label text="Inicia sesión en tu cuenta" styleClass="auth-subtitle"/>
+            </VBox>
+            <Region minHeight="30"/>
+
+            <VBox spacing="6">
+                <Label text="CORREO ELECTRÓNICO" styleClass="auth-label"/>
+                <TextField fx:id="loginEmail" styleClass="auth-field" promptText="tu@correo.com"/>
+            </VBox>
+            <Region minHeight="14"/>
+            <VBox spacing="6">
+                <Label text="CONTRASEÑA" styleClass="auth-label"/>
+                <PasswordField fx:id="loginPassword" styleClass="auth-field" promptText="••••••••"/>
+            </VBox>
+            <Region minHeight="8"/>
+            <HBox alignment="CENTER_RIGHT">
+                <Label text="¿Olvidaste tu contraseña?" styleClass="link-text"
+                       onMouseClicked="#onForgotPassword"/>
+            </HBox>
+            <Region minHeight="22"/>
+            <Button text="Iniciar sesión" styleClass="btn-auth-primary"
+                    maxWidth="Infinity" onAction="#onLogin"/>
+            <Region minHeight="18"/>
+            <HBox alignment="CENTER" spacing="8">
+                <Label text="¿No tienes cuenta?" styleClass="auth-subtitle"/>
+                <Label text="Regístrate" styleClass="link-text" onMouseClicked="#onShowRegister"/>
+            </HBox>
+            <Region minHeight="10"/>
+            <Label fx:id="loginError" text="" wrapText="true"
+                   style="-fx-text-fill:#ff5252;-fx-font-size:12px;" maxWidth="Infinity"/>
+        </VBox>
+
+        <!-- REGISTRO -->
+        <VBox fx:id="registerPanel" spacing="0" visible="false" managed="false">
+            <VBox spacing="6">
+                <Label text="Crear cuenta" styleClass="auth-title"/>
+                <Label text="Únete a FútbolStats" styleClass="auth-subtitle"/>
+            </VBox>
+            <Region minHeight="24"/>
+
+            <VBox spacing="6">
+                <Label text="NOMBRE COMPLETO" styleClass="auth-label"/>
+                <TextField fx:id="regName" styleClass="auth-field" promptText="Tu nombre"/>
+            </VBox>
+            <Region minHeight="12"/>
+            <VBox spacing="6">
+                <Label text="CORREO ELECTRÓNICO" styleClass="auth-label"/>
+                <TextField fx:id="regEmail" styleClass="auth-field" promptText="tu@correo.com"/>
+            </VBox>
+            <Region minHeight="12"/>
+            <VBox spacing="6">
+                <Label text="CONTRASEÑA" styleClass="auth-label"/>
+                <PasswordField fx:id="regPassword" styleClass="auth-field" promptText="Mínimo 6 caracteres"/>
+            </VBox>
+            <Region minHeight="12"/>
+            <VBox spacing="6">
+                <Label text="CONFIRMAR CONTRASEÑA" styleClass="auth-label"/>
+                <PasswordField fx:id="regConfirm" styleClass="auth-field" promptText="Repite la contraseña"/>
+            </VBox>
+            <Region minHeight="22"/>
+            <Button text="Crear cuenta" styleClass="btn-auth-primary"
+                    maxWidth="Infinity" onAction="#onRegister"/>
+            <Region minHeight="18"/>
+            <HBox alignment="CENTER" spacing="8">
+                <Label text="¿Ya tienes cuenta?" styleClass="auth-subtitle"/>
+                <Label text="Inicia sesión" styleClass="link-text" onMouseClicked="#onShowLogin"/>
+            </HBox>
+            <Label fx:id="registerError" text="" wrapText="true"
+                   style="-fx-text-fill:#ff5252;-fx-font-size:12px;" maxWidth="Infinity"/>
+        </VBox>
+    </VBox>
+</HBox>
