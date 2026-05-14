@@ -9,8 +9,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.*;
 import java.net.URL;
+import java.nio.file.*;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
@@ -21,6 +24,7 @@ public class LoginController implements Initializable {
     @FXML private TextField     loginEmail;
     @FXML private PasswordField loginPassword;
     @FXML private Label         loginError;
+    @FXML private CheckBox      recordarCheck;
 
     @FXML private TextField     regName;
     @FXML private TextField     regEmail;
@@ -30,10 +34,59 @@ public class LoginController implements Initializable {
 
     private DatabaseService db;
 
+    private static final String PREFS_PATH =
+            System.getProperty("user.home") + "/FutbolStats/recordar.properties";
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         db = DatabaseService.getInstance();
+        cargarCredenciales();
     }
+
+    // =============================================
+    // RECORDAR CREDENCIALES
+    // =============================================
+
+    private void cargarCredenciales() {
+        File f = new File(PREFS_PATH);
+        if (!f.exists()) return;
+        try (InputStream is = new FileInputStream(f)) {
+            Properties p = new Properties();
+            p.load(is);
+            String email = p.getProperty("email", "");
+            String pass  = p.getProperty("pass",  "");
+            if (!email.isEmpty()) {
+                loginEmail.setText(email);
+                loginPassword.setText(pass);
+                recordarCheck.setSelected(true);
+            }
+        } catch (IOException e) {
+            System.err.println("Error cargando credenciales: " + e.getMessage());
+        }
+    }
+
+    private void guardarCredenciales(String email, String pass) {
+        try {
+            Files.createDirectories(Paths.get(PREFS_PATH).getParent());
+            Properties p = new Properties();
+            p.setProperty("email", email);
+            p.setProperty("pass",  pass);
+            try (OutputStream os = new FileOutputStream(PREFS_PATH)) {
+                p.store(os, "FutbolStats - credenciales guardadas");
+            }
+        } catch (IOException e) {
+            System.err.println("Error guardando credenciales: " + e.getMessage());
+        }
+    }
+
+    private void borrarCredenciales() {
+        try { Files.deleteIfExists(Paths.get(PREFS_PATH)); }
+        catch (IOException e) { System.err.println("Error borrando credenciales: " + e.getMessage()); }
+    }
+
+    // =============================================
+    // LOGIN
+    // =============================================
 
     @FXML
     private void onLogin() {
@@ -45,11 +98,22 @@ public class LoginController implements Initializable {
         try {
             String name = db.login(email, pass);
             if (name == null) { showLoginError("Email o contraseña incorrectos"); return; }
+
+            if (recordarCheck.isSelected()) {
+                guardarCredenciales(email, pass);
+            } else {
+                borrarCredenciales();
+            }
+
             openDashboard(name);
         } catch (SQLException e) {
             showLoginError("Error de base de datos: " + e.getMessage());
         }
     }
+
+    // =============================================
+    // REGISTRO
+    // =============================================
 
     @FXML
     private void onRegister() {
@@ -61,9 +125,9 @@ public class LoginController implements Initializable {
         if (name.isEmpty() || email.isEmpty() || pass.isEmpty() || confirm.isEmpty()) {
             showRegisterError("Rellena todos los campos"); return;
         }
-        if (!email.contains("@"))     { showRegisterError("El correo no es válido"); return; }
-        if (pass.length() < 6)        { showRegisterError("La contraseña debe tener mínimo 6 caracteres"); return; }
-        if (!pass.equals(confirm))    { showRegisterError("Las contraseñas no coinciden"); return; }
+        if (!email.contains("@"))  { showRegisterError("El correo no es válido"); return; }
+        if (pass.length() < 6)     { showRegisterError("La contraseña debe tener mínimo 6 caracteres"); return; }
+        if (!pass.equals(confirm)) { showRegisterError("Las contraseñas no coinciden"); return; }
 
         try {
             boolean ok = db.register(name, email, pass);

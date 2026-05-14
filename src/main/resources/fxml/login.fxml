@@ -81,7 +81,11 @@
                 <PasswordField fx:id="loginPassword" styleClass="auth-field" promptText="••••••••"/>
             </VBox>
             <Region minHeight="8"/>
-            <HBox alignment="CENTER_RIGHT">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <CheckBox fx:id="recordarCheck"
+                          text="Recordar sesión"
+                          style="-fx-text-fill:#9a9a9a;-fx-font-size:12px;"/>
+                <Region HBox.hgrow="ALWAYS"/>
                 <Label text="¿Olvidaste tu contraseña?" styleClass="link-text"
                        onMouseClicked="#onForgotPassword"/>
             </HBox>
@@ -134,7 +138,4 @@
                 <Label text="Inicia sesión" styleClass="link-text" onMouseClicked="#onShowLogin"/>
             </HBox>
             <Label fx:id="registerError" text="" wrapText="true"
-                   style="-fx-text-fill:#ff5252;-fx-font-size:12px;" maxWidth="Infinity"/>
-        </VBox>
-    </VBox>
-</HBox>
+                   style="-fx-text-fil
