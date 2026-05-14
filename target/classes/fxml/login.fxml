@@ -26,7 +26,7 @@
 
         <VBox spacing="24">
             <HBox spacing="16" alignment="CENTER_LEFT">
-                <Label text="⚡" style="-fx-font-size:22px;"/>
+                <Label text="&#9889;" style="-fx-font-size:22px;"/>
                 <VBox spacing="2">
                     <Label text="Estadísticas en tiempo real"
                            style="-fx-text-fill:#f0f0f0;-fx-font-size:14px;-fx-font-weight:600;"/>
@@ -35,7 +35,7 @@
                 </VBox>
             </HBox>
             <HBox spacing="16" alignment="CENTER_LEFT">
-                <Label text="⚖️" style="-fx-font-size:22px;"/>
+                <Label text="&#9878;" style="-fx-font-size:22px;"/>
                 <VBox spacing="2">
                     <Label text="Comparación avanzada"
                            style="-fx-text-fill:#f0f0f0;-fx-font-size:14px;-fx-font-weight:600;"/>
@@ -44,7 +44,7 @@
                 </VBox>
             </HBox>
             <HBox spacing="16" alignment="CENTER_LEFT">
-                <Label text="🏆" style="-fx-font-size:22px;"/>
+                <Label text="&#127942;" style="-fx-font-size:22px;"/>
                 <VBox spacing="2">
                     <Label text="Rankings por liga"
                            style="-fx-text-fill:#f0f0f0;-fx-font-size:14px;-fx-font-weight:600;"/>
@@ -138,4 +138,7 @@
                 <Label text="Inicia sesión" styleClass="link-text" onMouseClicked="#onShowLogin"/>
             </HBox>
             <Label fx:id="registerError" text="" wrapText="true"
-                   style="-fx-text-fil
+                   style="-fx-text-fill:#ff5252;-fx-font-size:12px;" maxWidth="Infinity"/>
+        </VBox>
+    </VBox>
+</HBox>
