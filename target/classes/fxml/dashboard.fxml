@@ -13,17 +13,14 @@
     <!-- SIDEBAR -->
     <VBox styleClass="sidebar" spacing="4">
         <padding><Insets top="28" right="15" bottom="28" left="15"/></padding>
-
         <HBox spacing="0" alignment="CENTER_LEFT">
             <padding><Insets left="6" bottom="32"/></padding>
             <Label text="Fútbol" styleClass="sidebar-logo"/>
             <Label text="Stats" styleClass="sidebar-logo-dot"/>
         </HBox>
-
         <Label text="MENÚ" styleClass="sidebar-section">
             <padding><Insets left="6" bottom="8"/></padding>
         </Label>
-
         <Button fx:id="btnDashboard" text="🏠  Inicio"      styleClass="nav-btn, nav-btn-active" onAction="#onNavDashboard" maxWidth="Infinity"/>
         <Button fx:id="btnPlayer"    text="👤  Jugadores"   styleClass="nav-btn"                 onAction="#onNavPlayer"    maxWidth="Infinity"/>
         <Button fx:id="btnCompare"   text="⚖️  Comparar"    styleClass="nav-btn"                 onAction="#onNavCompare"   maxWidth="Infinity"/>
@@ -32,11 +29,9 @@
         <Button fx:id="btnSettings"  text="⚙️  Ajustes"     styleClass="nav-btn"                 onAction="#onNavSettings"  maxWidth="Infinity"/>
         <Button fx:id="btnGame"      text="🎮  Minijuego"   styleClass="nav-btn"                 onAction="#onNavGame"      maxWidth="Infinity"/>
         <Button fx:id="btnFavorites" text="⭐  Favoritos"   styleClass="nav-btn"                 onAction="#onNavFavorites" maxWidth="Infinity"/>
-
         <Region VBox.vgrow="ALWAYS"/>
         <Separator style="-fx-background-color:#1e1e1e;"/>
         <Region minHeight="12"/>
-
         <HBox alignment="CENTER_LEFT" spacing="10">
             <padding><Insets left="6"/></padding>
             <Label text="👤" style="-fx-font-size:16px;"/>
@@ -117,8 +112,20 @@
                 </HBox>
                 <Label text="Busca y consulta estadísticas completas" styleClass="page-subtitle"/>
                 <HBox spacing="12" alignment="CENTER_LEFT">
-                    <TextField fx:id="playerSearchField" styleClass="search-field"
-                               promptText="Nombre del jugador..." HBox.hgrow="ALWAYS"/>
+                    <VBox HBox.hgrow="ALWAYS" spacing="0">
+                        <TextField fx:id="playerSearchField" styleClass="search-field"
+                                   promptText="Nombre del jugador..."/>
+                        <!-- BÚSQUEDAS RECIENTES -->
+                        <VBox fx:id="busquedasRecientesPanel" visible="false" managed="false"
+                              style="-fx-background-color:#1e1e1e;-fx-border-color:#2a2a2a;-fx-border-radius:0 0 8 8;-fx-border-width:0 1 1 1;">
+                            <Label text="BÚSQUEDAS RECIENTES"
+                                   style="-fx-text-fill:#555;-fx-font-size:10px;-fx-font-weight:600;-fx-padding:6 12 4 12;"/>
+                            <ListView fx:id="busquedasRecientesList"
+                                      styleClass="player-list"
+                                      prefHeight="120"
+                                      style="-fx-border-color:transparent;"/>
+                        </VBox>
+                    </VBox>
                     <ComboBox fx:id="playerSeasonCombo" styleClass="combo-box" minWidth="120"/>
                     <Button text="Buscar" styleClass="btn-primary" onAction="#onSearchPlayer"/>
                 </HBox>
@@ -142,7 +149,6 @@
                                         style="-fx-font-size:12px;-fx-padding:7 14;"/>
                                 <Label fx:id="favStatusLabel" text="" style="-fx-text-fill:#00c97a;-fx-font-size:12px;-fx-font-weight:600;"/>
                             </HBox>
-                            <!-- NOTAS Y EXPORTAR FICHA -->
                             <VBox spacing="6">
                                 <Label text="📝  NOTA PERSONAL" style="-fx-text-fill:#555555;-fx-font-size:10px;-fx-font-weight:600;"/>
                                 <TextArea fx:id="notaField"
@@ -220,7 +226,6 @@
                            style="-fx-text-fill:#555;-fx-font-size:11px;"/>
                 </HBox>
                 <HBox spacing="16">
-                    <!-- JUGADOR 1 -->
                     <VBox styleClass="compare-player-col" spacing="12" HBox.hgrow="ALWAYS">
                         <Label text="JUGADOR 1" style="-fx-text-fill:#555;-fx-font-size:10px;-fx-font-weight:600;"/>
                         <VBox fx:id="compareSearchBox1" spacing="8" visible="true" managed="true">
@@ -243,8 +248,6 @@
                                     style="-fx-font-size:12px;-fx-padding:8 12;"/>
                         </VBox>
                     </VBox>
-
-                    <!-- CENTRO -->
                     <VBox alignment="CENTER" spacing="16" minWidth="160">
                         <Label text="VS" style="-fx-text-fill:#2a2a2a;-fx-font-size:36px;-fx-font-weight:800;"/>
                         <Button fx:id="compareBtn" text="⚖️ Comparar" styleClass="btn-primary"
@@ -253,14 +256,11 @@
                                 onAction="#onResetCompareAll" maxWidth="Infinity"
                                 style="-fx-font-size:12px;-fx-padding:8 12;"/>
                         <Label fx:id="scoreLabel" text="" styleClass="score-badge" visible="false" managed="false"/>
-                        <!-- EXPORTAR COMPARATIVA -->
                         <Button text="📤 Exportar comparativa CSV" styleClass="btn-secondary"
                                 onAction="#onExportarComparativa"
                                 maxWidth="Infinity"
                                 style="-fx-font-size:12px;-fx-padding:8 12;"/>
                     </VBox>
-
-                    <!-- JUGADOR 2 -->
                     <VBox styleClass="compare-player-col" spacing="12" HBox.hgrow="ALWAYS">
                         <Label text="JUGADOR 2" style="-fx-text-fill:#555;-fx-font-size:10px;-fx-font-weight:600;"/>
                         <VBox fx:id="compareSearchBox2" spacing="8" visible="true" managed="true">
@@ -409,6 +409,74 @@
                     <Label text="Mis Favoritos" styleClass="page-title"/>
                 </HBox>
                 <Label text="Jugadores guardados — ordénalos por categoría y consulta sus perfiles" styleClass="page-subtitle"/>
+
+                <!-- RESUMEN ESTADÍSTICAS FAVORITOS -->
+                <VBox fx:id="favStatsPanel" visible="false" managed="false"
+                      style="-fx-background-color:#1e1e1e;-fx-background-radius:12;-fx-border-color:#2a2a2a;-fx-border-radius:12;-fx-border-width:1;-fx-padding:16;">
+                    <Label text="📊  RESUMEN DE TUS FAVORITOS"
+                           style="-fx-text-fill:#555;-fx-font-size:10px;-fx-font-weight:600;"/>
+                    <Region minHeight="10"/>
+                    <HBox spacing="0">
+                        <!-- Medias -->
+                        <VBox spacing="12" HBox.hgrow="ALWAYS">
+                            <Label text="MEDIAS POR JUGADOR"
+                                   style="-fx-text-fill:#444;-fx-font-size:10px;-fx-font-weight:600;"/>
+                            <HBox spacing="16">
+                                <VBox spacing="2" alignment="CENTER">
+                                    <Label fx:id="statFavGoles" text="—"
+                                           style="-fx-text-fill:#00c97a;-fx-font-size:22px;-fx-font-weight:800;"/>
+                                    <Label text="Goles"
+                                           style="-fx-text-fill:#555;-fx-font-size:11px;"/>
+                                </VBox>
+                                <VBox spacing="2" alignment="CENTER">
+                                    <Label fx:id="statFavAsist" text="—"
+                                           style="-fx-text-fill:#00c97a;-fx-font-size:22px;-fx-font-weight:800;"/>
+                                    <Label text="Asistencias"
+                                           style="-fx-text-fill:#555;-fx-font-size:11px;"/>
+                                </VBox>
+                                <VBox spacing="2" alignment="CENTER">
+                                    <Label fx:id="statFavPartidos" text="—"
+                                           style="-fx-text-fill:#00c97a;-fx-font-size:22px;-fx-font-weight:800;"/>
+                                    <Label text="Partidos"
+                                           style="-fx-text-fill:#555;-fx-font-size:11px;"/>
+                                </VBox>
+                                <VBox spacing="2" alignment="CENTER">
+                                    <Label fx:id="statFavValoracion" text="—"
+                                           style="-fx-text-fill:#00c97a;-fx-font-size:22px;-fx-font-weight:800;"/>
+                                    <Label text="Valoración"
+                                           style="-fx-text-fill:#555;-fx-font-size:11px;"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                        <!-- Separador -->
+                        <Separator orientation="VERTICAL"
+                                   style="-fx-background-color:#2a2a2a;-fx-padding:0 20;"/>
+                        <!-- Mejores -->
+                        <VBox spacing="8" HBox.hgrow="ALWAYS" style="-fx-padding:0 0 0 20;">
+                            <Label text="MEJORES DE TU LISTA"
+                                   style="-fx-text-fill:#444;-fx-font-size:10px;-fx-font-weight:600;"/>
+                            <HBox spacing="6">
+                                <Label text="⚽" style="-fx-font-size:13px;"/>
+                                <Label text="Goleador:" style="-fx-text-fill:#555;-fx-font-size:12px;"/>
+                                <Label fx:id="statFavMejorGoleador" text="—"
+                                       style="-fx-text-fill:#f0f0f0;-fx-font-size:12px;-fx-font-weight:600;"/>
+                            </HBox>
+                            <HBox spacing="6">
+                                <Label text="🎯" style="-fx-font-size:13px;"/>
+                                <Label text="Asistente:" style="-fx-text-fill:#555;-fx-font-size:12px;"/>
+                                <Label fx:id="statFavMejorAsistente" text="—"
+                                       style="-fx-text-fill:#f0f0f0;-fx-font-size:12px;-fx-font-weight:600;"/>
+                            </HBox>
+                            <HBox spacing="6">
+                                <Label text="⭐" style="-fx-font-size:13px;"/>
+                                <Label text="Valorado:" style="-fx-text-fill:#555;-fx-font-size:12px;"/>
+                                <Label fx:id="statFavMejorValorado" text="—"
+                                       style="-fx-text-fill:#f0f0f0;-fx-font-size:12px;-fx-font-weight:600;"/>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
                 <HBox spacing="12" alignment="CENTER_LEFT">
                     <Label text="Ordenar por:" style="-fx-text-fill:#9a9a9a;-fx-font-size:13px;"/>
                     <ComboBox fx:id="favSortCombo" styleClass="combo-box" minWidth="160"/>

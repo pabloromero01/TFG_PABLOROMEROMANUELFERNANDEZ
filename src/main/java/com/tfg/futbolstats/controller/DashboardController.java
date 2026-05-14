@@ -2,6 +2,8 @@ package com.tfg.futbolstats.controller;
 
 import com.tfg.futbolstats.model.Player;
 import com.tfg.futbolstats.model.PlayerStats;
+import com.tfg.futbolstats.service.BusquedaRecienteService;
+import com.tfg.futbolstats.service.EstadisticasService;
 import com.tfg.futbolstats.service.ExportService;
 import com.tfg.futbolstats.service.FavoritesService;
 import com.tfg.futbolstats.service.LeagueService;
@@ -44,9 +46,13 @@ public class DashboardController implements Initializable {
     @FXML private Label statGoals, statAssists, statApps, statMins, statRating;
     @FXML private GridPane attackGrid, defenseGrid;
 
-    // --- Notas (nuevo) ---
+    // --- Notas ---
     @FXML private TextArea notaField;
     @FXML private Label    notaStatusLabel;
+
+    // --- Búsquedas recientes (nuevo) ---
+    @FXML private VBox             busquedasRecientesPanel;
+    @FXML private ListView<String> busquedasRecientesList;
 
     // --- Comparar ---
     @FXML private ComboBox<String> compareSeasonCombo;
@@ -73,12 +79,14 @@ public class DashboardController implements Initializable {
     @FXML private VBox   worstPlayersContainer, worstEmptyState;
 
     // --- Favoritos ---
-    @FXML private VBox             favContainer, favEmptyState;
+    @FXML private VBox             favContainer, favEmptyState, favStatsPanel;
     @FXML private ComboBox<String> favSortCombo;
     @FXML private Label            favCountLabel;
     @FXML private Button           favBtn;
     @FXML private Label            favStatusLabel;
     @FXML private Label            compareSeasonHint;
+    @FXML private Label            statFavGoles, statFavAsist, statFavPartidos, statFavValoracion;
+    @FXML private Label            statFavMejorGoleador, statFavMejorAsistente, statFavMejorValorado;
 
     // --- Ajustes ---
     @FXML private ComboBox<String> defaultSeasonCombo;
@@ -86,11 +94,13 @@ public class DashboardController implements Initializable {
     @FXML private Button btnColorGreen, btnColorBlue, btnColorOrange, btnColorPurple, btnColorRed;
     private String pendingAccent = "#00c97a";
 
-    private final PlayerService    playerService    = new PlayerService();
-    private final LeagueService    leagueService    = new LeagueService();
-    private final FavoritesService favoritesService = FavoritesService.getInstance();
-    private final NotasService     notasService     = NotasService.getInstance();
-    private final ExportService    exportService    = ExportService.getInstance();
+    private final PlayerService           playerService       = new PlayerService();
+    private final LeagueService           leagueService       = new LeagueService();
+    private final FavoritesService        favoritesService    = FavoritesService.getInstance();
+    private final NotasService            notasService        = NotasService.getInstance();
+    private final ExportService           exportService       = ExportService.getInstance();
+    private final EstadisticasService     estadisticasService = EstadisticasService.getInstance();
+    private final BusquedaRecienteService busquedaService     = BusquedaRecienteService.getInstance();
 
     private Player currentPlayerDetail;
     private Player selectedCompare1, selectedCompare2;
@@ -113,6 +123,7 @@ public class DashboardController implements Initializable {
         setupPlayerList();
         setupCompareLists();
         setupFavSortCombo();
+        setupBusquedasRecientes();
         showPage(pageDashboard);
     }
 
@@ -160,12 +171,53 @@ public class DashboardController implements Initializable {
     }
 
     // =============================================
+    // BÚSQUEDAS RECIENTES
+    // =============================================
+    private void setupBusquedasRecientes() {
+        // Listener para mostrar sugerencias mientras escribe
+        playerSearchField.textProperty().addListener((obs, old, nuevo) -> {
+            if (nuevo == null || nuevo.trim().isEmpty()) {
+                busquedasRecientesPanel.setVisible(false);
+                busquedasRecientesPanel.setManaged(false);
+                return;
+            }
+            List<String> sugerencias = busquedaService.getSugerencias(nuevo.trim());
+            if (!sugerencias.isEmpty()) {
+                busquedasRecientesList.setItems(FXCollections.observableArrayList(sugerencias));
+                busquedasRecientesPanel.setVisible(true);
+                busquedasRecientesPanel.setManaged(true);
+            } else {
+                busquedasRecientesPanel.setVisible(false);
+                busquedasRecientesPanel.setManaged(false);
+            }
+        });
+
+        // Al seleccionar una sugerencia, rellenar el campo y ocultar el panel
+        busquedasRecientesList.getSelectionModel().selectedItemProperty().addListener((obs, old, val) -> {
+            if (val != null) {
+                playerSearchField.setText(val);
+                busquedasRecientesPanel.setVisible(false);
+                busquedasRecientesPanel.setManaged(false);
+                busquedasRecientesList.getSelectionModel().clearSelection();
+            }
+        });
+    }
+
+    // =============================================
     // JUGADORES
     // =============================================
     @FXML private void onSearchPlayer() {
         String name   = playerSearchField.getText().trim();
         String season = playerSeasonCombo.getValue();
         if (name.isEmpty()) { setStatus(HINT); return; }
+
+        // Registrar búsqueda en el historial
+        busquedaService.registrar(name, season);
+
+        // Ocultar sugerencias
+        busquedasRecientesPanel.setVisible(false);
+        busquedasRecientesPanel.setManaged(false);
+
         setStatus("Buscando '" + name + "'...");
         playerResultList.setItems(FXCollections.observableArrayList());
         playerDetailPanel.setVisible(false); playerDetailPanel.setManaged(false);
@@ -236,17 +288,10 @@ public class DashboardController implements Initializable {
     }
 
     // =============================================
-    // NOTAS — métodos nuevos
+    // NOTAS
     // =============================================
-
-    /**
-     * Guarda la nota escrita en el campo de texto para el jugador actual.
-     */
     @FXML private void onGuardarNota() {
-        if (currentPlayerDetail == null) {
-            setStatus("Selecciona un jugador primero");
-            return;
-        }
+        if (currentPlayerDetail == null) { setStatus("Selecciona un jugador primero"); return; }
         String nota = notaField.getText().trim();
         if (nota.isEmpty()) {
             notasService.borrarNota(currentPlayerDetail.getName());
@@ -262,17 +307,10 @@ public class DashboardController implements Initializable {
     }
 
     // =============================================
-    // EXPORT — métodos nuevos
+    // EXPORT
     // =============================================
-
-    /**
-     * Exporta la ficha del jugador actual a un archivo TXT.
-     */
     @FXML private void onExportarFicha() {
-        if (currentPlayerDetail == null) {
-            setStatus("Selecciona un jugador primero");
-            return;
-        }
+        if (currentPlayerDetail == null) { setStatus("Selecciona un jugador primero"); return; }
         new Thread(() -> {
             try {
                 String ruta = exportService.exportarFichaJugador(currentPlayerDetail);
@@ -283,14 +321,8 @@ public class DashboardController implements Initializable {
         }).start();
     }
 
-    /**
-     * Exporta la comparativa actual a un archivo CSV.
-     */
     @FXML private void onExportarComparativa() {
-        if (selectedCompare1 == null || selectedCompare2 == null) {
-            setStatus("Realiza una comparativa primero");
-            return;
-        }
+        if (selectedCompare1 == null || selectedCompare2 == null) { setStatus("Realiza una comparativa primero"); return; }
         new Thread(() -> {
             try {
                 String ruta = exportService.exportarComparativa(selectedCompare1, selectedCompare2);
@@ -730,10 +762,25 @@ public class DashboardController implements Initializable {
             List<Player> favs = favoritesService.getFavorites(order);
             favContainer.getChildren().clear();
             boolean empty = favs.isEmpty();
-            favEmptyState.setVisible(empty); favEmptyState.setManaged(empty);
-            favContainer.setVisible(!empty); favContainer.setManaged(!empty);
+            favEmptyState.setVisible(empty);  favEmptyState.setManaged(empty);
+            favContainer.setVisible(!empty);  favContainer.setManaged(!empty);
             favCountLabel.setText(favs.size() + (favs.size() == 1 ? " favorito" : " favoritos"));
             for (Player p : favs) favContainer.getChildren().add(buildFavCard(p));
+
+            // Resumen estadístico
+            if (!favs.isEmpty()) {
+                EstadisticasService.Resumen r = estadisticasService.calcularResumen(favs);
+                statFavGoles.setText(String.format("%.1f", r.mediaGoles));
+                statFavAsist.setText(String.format("%.1f", r.mediaAsistencias));
+                statFavPartidos.setText(String.format("%.1f", r.mediaPartidos));
+                statFavValoracion.setText(String.format("%.2f", r.mediaValoracion));
+                statFavMejorGoleador.setText(r.mejorGoleador);
+                statFavMejorAsistente.setText(r.mejorAsistente);
+                statFavMejorValorado.setText(r.mejorValorado);
+                favStatsPanel.setVisible(true);  favStatsPanel.setManaged(true);
+            } else {
+                favStatsPanel.setVisible(false); favStatsPanel.setManaged(false);
+            }
         } catch (Exception e) {
             setStatus("Error cargando favoritos: " + e.getMessage());
         }
