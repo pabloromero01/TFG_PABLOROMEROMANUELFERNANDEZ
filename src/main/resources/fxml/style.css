@@ -396,3 +396,30 @@
     -fx-padding: 14 32;
 }
 .btn-game-restart:hover { -fx-background-color: #00e58a; }
+/* Checkbox recordar sesión */
+.check-box .box {
+    -fx-background-color: #1e1e1e;
+    -fx-border-color: #2a2a2a;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+.check-box:selected .box {
+    -fx-background-color: #00c97a;
+    -fx-border-color: #00c97a;
+}
+.check-box .mark { -fx-background-color: #0d0d0d; }
+
+/* TextArea oscuro */
+.text-area {
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #f0f0f0;
+    -fx-border-color: #2a2a2a;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+.text-area .content {
+    -fx-background-color: #1e1e1e;
+}
+.text-area:focused { -fx-border-color: #00c97a; }
+.text-area .scroll-pane { -fx-background-color: #1e1e1e; }
+.text-area .scroll-pane .viewport { -fx-background-color: #1e1e1e; }
