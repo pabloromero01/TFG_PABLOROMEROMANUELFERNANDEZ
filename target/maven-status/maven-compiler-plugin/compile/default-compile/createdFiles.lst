@@ -5,6 +5,7 @@ com\tfg\futbolstats\controller\DashboardController$1.class
 com\tfg\futbolstats\service\GameService.class
 com\tfg\futbolstats\service\LeagueService.class
 com\tfg\futbolstats\model\Player.class
+com\tfg\futbolstats\service\BusquedaRecienteService.class
 com\tfg\futbolstats\service\PlayerService.class
 com\tfg\futbolstats\model\PlayerStats.class
 com\tfg\futbolstats\controller\GameController.class
@@ -12,8 +13,10 @@ com\tfg\futbolstats\model\GamePlayer.class
 com\tfg\futbolstats\service\ExportService.class
 com\tfg\futbolstats\service\PlayerIdMap.class
 com\tfg\futbolstats\service\NotasService.class
+com\tfg\futbolstats\service\EstadisticasService.class
 com\tfg\futbolstats\service\ApiFootballService.class
 com\tfg\futbolstats\controller\DashboardController$2.class
+com\tfg\futbolstats\service\EstadisticasService$Resumen.class
 com\tfg\futbolstats\controller\DashboardController.class
 com\tfg\futbolstats\Main.class
 com\tfg\futbolstats\service\FavoritesService.class
